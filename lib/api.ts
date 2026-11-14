@@ -117,6 +117,8 @@ interface RawTeamsResponse {
 
 function slugify(name: string): string {
   return name
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
@@ -192,6 +194,7 @@ export async function fetchFinishedResults(): Promise<FinishedResult[]> {
       homeGoals: m.score.fullTime.home as number,
       awayGoals: m.score.fullTime.away as number,
       utcDate: m.utcDate,
+      matchday: m.matchday,
     }));
 }
 

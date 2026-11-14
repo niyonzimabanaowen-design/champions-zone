@@ -1,0 +1,9 @@
+{
+  "real-madrid": { "stadiumPhoto": "/images/clubs/real-madrid.jpg" },
+  "arsenal": { "stadiumPhoto": "/images/clubs/arsenal.jpg" },
+  "como-1907": { "stadiumPhoto": "/images/clubs/como-1907.jpg" },
+  "barca": { "stadiumPhoto": "/images/clubs/barca.jpg" },
+  "aston-villa": { "stadiumPhoto": "/images/clubs/aston-villa.jpg" },
+  "man-city": { "stadiumPhoto": "/images/clubs/man-city.jpg" },
+  "liverpool": { "stadiumPhoto": "/images/clubs/liverpool.jpg" }
+}

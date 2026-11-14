@@ -6,6 +6,7 @@ export interface FinishedResult {
   homeGoals: number;
   awayGoals: number;
   utcDate: string;
+  matchday: number;
 }
 
 interface TeamAgg {
@@ -127,4 +128,62 @@ export function computeForm(
 export function formPoints(form: FormResult[] | undefined): number {
   if (!form) return 0;
   return form.reduce((sum, r) => sum + (r === "W" ? 3 : r === "D" ? 1 : 0), 0);
+}
+
+export interface PositionAtMatchday {
+  matchday: number;
+  position: number;
+  points: number;
+}
+
+/**
+ * Recomputes the full table from scratch using only results up to each given
+ * matchday, then reads off one team's rank at each point — a real
+ * "position over time" series derived from actual results, since the API
+ * only exposes the current snapshot, not historical standings.
+ */
+export function computePositionHistory(
+  teamId: number,
+  teamRefs: TeamRef[],
+  results: FinishedResult[],
+  matchdays: number[],
+): PositionAtMatchday[] {
+  return matchdays.map((matchday) => {
+    const upto = results.filter((r) => r.matchday <= matchday);
+    const agg = new Map<number, { won: number; draw: number; lost: number; gf: number; ga: number }>();
+    for (const t of teamRefs) agg.set(t.id, { won: 0, draw: 0, lost: 0, gf: 0, ga: 0 });
+
+    for (const r of upto) {
+      const h = agg.get(r.homeTeam.id);
+      if (h) {
+        h.gf += r.homeGoals;
+        h.ga += r.awayGoals;
+        if (r.homeGoals > r.awayGoals) h.won++;
+        else if (r.homeGoals === r.awayGoals) h.draw++;
+        else h.lost++;
+      }
+      const a = agg.get(r.awayTeam.id);
+      if (a) {
+        a.gf += r.awayGoals;
+        a.ga += r.homeGoals;
+        if (r.awayGoals > r.homeGoals) a.won++;
+        else if (r.awayGoals === r.homeGoals) a.draw++;
+        else a.lost++;
+      }
+    }
+
+    const table = teamRefs.map((t) => {
+      const s = agg.get(t.id)!;
+      const points = s.won * 3 + s.draw;
+      const goalDifference = s.gf - s.ga;
+      return { id: t.id, points, goalDifference, goalsFor: s.gf };
+    });
+    table.sort(
+      (x, y) =>
+        y.points - x.points || y.goalDifference - x.goalDifference || y.goalsFor - x.goalsFor,
+    );
+
+    const index = table.findIndex((t) => t.id === teamId);
+    return { matchday, position: index + 1, points: table[index]?.points ?? 0 };
+  });
 }

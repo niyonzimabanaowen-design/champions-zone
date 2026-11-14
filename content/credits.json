@@ -38,5 +38,61 @@
     "sourceUrl": "https://www.pexels.com/photo/grayscale-photo-of-floodlights-4135322/",
     "license": "Pexels License",
     "licenseUrl": "https://www.pexels.com/license/"
+  },
+  {
+    "file": "/images/clubs/real-madrid.jpg",
+    "title": "Real Madrid's Santiago Bernabéu Stadium, Madrid, Spain",
+    "author": "Ank Kumar",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Real_Madrid%27s_Santiago_Bernab%C3%A9u_Stadium,_Madrid,_Spain_(Ank_Kumar)_01.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  {
+    "file": "/images/clubs/arsenal.jpg",
+    "title": "Emirates Stadium Night - East side - Composite",
+    "author": "Ed g2s",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Emirates_Stadium_Night_-_East_side_-_Composite.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  {
+    "file": "/images/clubs/como-1907.jpg",
+    "title": "Stadium Giuseppe Sinigaglia seen from Monte Croce",
+    "author": "Kaitu",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Stadium_Giuseppe_Sinigaglia_seen_from_Monte_Croce.jpg",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  {
+    "file": "/images/clubs/barca.jpg",
+    "title": "Camp Nou at Night - april 2022",
+    "author": "JaflaumS05",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Camp_Nou_at_Night_-_april_2022.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  {
+    "file": "/images/clubs/aston-villa.jpg",
+    "title": "Villa Park at night",
+    "author": "Marion O'Sullivan",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Villa_Park_at_night.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  {
+    "file": "/images/clubs/man-city.jpg",
+    "title": "Etihad Stadium at night, October 2011",
+    "author": "Mark Tighe (mjtmail)",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Etihad_Stadium_at_night,_October_2011.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  {
+    "file": "/images/clubs/liverpool.jpg",
+    "title": "Anfield Stadium, Liverpool (1)",
+    "author": "Rept0n1x",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Anfield_Stadium,_Liverpool_(1).JPG",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
   }
 ]

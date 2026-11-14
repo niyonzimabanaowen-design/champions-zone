@@ -3,6 +3,7 @@ import { Barlow_Condensed, Inter } from "next/font/google";
 import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { RouteTransitions } from "@/components/motion/RouteTransitions";
 import "./globals.css";
 
 const barlowCondensed = Barlow_Condensed({
@@ -35,7 +36,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col bg-bg text-text">
         <TooltipProvider delayDuration={150}>
           <Nav />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1">
+            <RouteTransitions>{children}</RouteTransitions>
+          </main>
           <Footer />
         </TooltipProvider>
       </body>

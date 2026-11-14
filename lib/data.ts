@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import {
   fetchCurrentMatchday,
   fetchFinishedResults,
@@ -15,7 +16,12 @@ import {
   getFallbackScorers,
   getFallbackStandings,
 } from "@/lib/fallback";
-import { computeForm, computeHomeAwayStandings } from "@/lib/standings-splits";
+import {
+  computeForm,
+  computeHomeAwayStandings,
+  computePositionHistory,
+  type PositionAtMatchday,
+} from "@/lib/standings-splits";
 import type { Match, Scorer, Standing, Team } from "@/types";
 
 export interface DataResult<T> {
@@ -144,3 +150,64 @@ export async function getTeams(): Promise<DataResult<Team[]>> {
   // a key or a working API call there is honestly no team list to show.
   return { data: [], source: "fallback", updatedAt: fallbackCapturedAt };
 }
+
+export interface ClubDetail {
+  team: Team;
+  standing?: Standing;
+  matches: Match[];
+  topScorer?: Scorer;
+  positionHistory: PositionAtMatchday[];
+  updatedAt: string;
+}
+
+export type ClubDetailResult = ClubDetail | "unavailable" | "not-found";
+
+/**
+ * Everything a club page needs, aggregated from real live data: the team
+ * record, its row in the full standings, every match it's played or has
+ * scheduled, its top scorer among the competition's scorers list, and a
+ * position-over-time series recomputed from finished results (the API only
+ * exposes the current standings snapshot, not historical ones). Returns
+ * "unavailable" when live data isn't reachable (no honest fallback exists
+ * for this much team-specific detail) or "not-found" for an unknown slug.
+ * Wrapped in React's cache() so the page and generateMetadata share one
+ * fetch instead of duplicating the whole aggregation per request.
+ */
+export const getClubDetail = cache(async (slug: string): Promise<ClubDetailResult> => {
+  if (!hasApiKey()) return "unavailable";
+  try {
+    const [teams, standings, matches, scorers, results] = await Promise.all([
+      fetchTeams(),
+      fetchStandings(),
+      fetchMatches(),
+      fetchScorers(100),
+      fetchFinishedResults(),
+    ]);
+
+    const team = teams.find((t) => t.slug === slug);
+    if (!team) return "not-found";
+
+    const standing = standings.find((s) => s.team.id === team.id);
+    const clubMatches = matches.filter(
+      (m) => m.homeTeam.id === team.id || m.awayTeam.id === team.id,
+    );
+    const topScorer = scorers
+      .filter((s) => s.team.id === team.id)
+      .sort((a, b) => b.goals - a.goals)[0];
+
+    const playedMatchdays = [...new Set(results.map((r) => r.matchday))].sort((a, b) => a - b);
+    const positionHistory = computePositionHistory(team.id, teams, results, playedMatchdays);
+
+    return {
+      team,
+      standing,
+      matches: clubMatches,
+      topScorer,
+      positionHistory,
+      updatedAt: new Date().toISOString(),
+    };
+  } catch (err) {
+    console.error("getClubDetail: live fetch failed", err);
+    return "unavailable";
+  }
+});
