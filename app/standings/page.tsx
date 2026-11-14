@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { getStandings } from "@/lib/data";
-import { StandingsTable } from "@/components/sections/StandingsTable";
+import { getStandingsSplits } from "@/lib/data";
+import { StandingsExplorer } from "@/components/sections/StandingsExplorer";
 import { UpdatedBadge } from "@/components/sections/UpdatedBadge";
 import { ParallaxHeader } from "@/components/motion/ParallaxHeader";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function StandingsPage() {
-  const { data: standings, source, updatedAt } = await getStandings();
+  const { full, home, away, source, updatedAt } = await getStandingsSplits();
 
   return (
     <div>
@@ -26,15 +26,15 @@ export default async function StandingsPage() {
           <UpdatedBadge source={source} updatedAt={updatedAt} />
         </div>
 
-        {source === "fallback" && standings.length < 36 && (
+        {source === "fallback" && full.length < 36 && (
           <p className="mb-6 rounded-xl border border-line bg-surface px-4 py-3 text-sm text-muted">
-            Showing the top {standings.length} clubs from cached fallback data —
+            Showing the top {full.length} clubs from cached fallback data —
             the live API is temporarily unavailable, so the rest of the table
-            isn&apos;t shown rather than guessed.
+            and the Home/Away splits aren&apos;t shown rather than guessed.
           </p>
         )}
 
-        <StandingsTable standings={standings} sortable />
+        <StandingsExplorer full={full} home={home} away={away} />
       </div>
     </div>
   );

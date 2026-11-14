@@ -2,6 +2,7 @@ import "server-only";
 
 import {
   fetchCurrentMatchday,
+  fetchFinishedResults,
   fetchMatches,
   fetchScorers,
   fetchStandings,
@@ -14,6 +15,7 @@ import {
   getFallbackScorers,
   getFallbackStandings,
 } from "@/lib/fallback";
+import { computeForm, computeHomeAwayStandings } from "@/lib/standings-splits";
 import type { Match, Scorer, Standing, Team } from "@/types";
 
 export interface DataResult<T> {
@@ -41,6 +43,53 @@ export async function getStandings(): Promise<DataResult<Standing[]>> {
     }
   }
   return { data: getFallbackStandings(), source: "fallback", updatedAt: fallbackCapturedAt };
+}
+
+export interface StandingsSplits {
+  full: Standing[];
+  home: Standing[];
+  away: Standing[];
+  source: "live" | "fallback";
+  updatedAt: string;
+}
+
+/**
+ * Full table plus real Home-only and Away-only tables and last-5 form,
+ * derived from finished match results (football-data.org doesn't expose
+ * home/away splits for this competition's league-phase format). Home/Away
+ * come back empty when live data isn't available — the fallback seed has no
+ * match-level results to honestly derive them from.
+ */
+export async function getStandingsSplits(): Promise<StandingsSplits> {
+  if (hasApiKey()) {
+    try {
+      const [total, results] = await Promise.all([fetchStandings(), fetchFinishedResults()]);
+      const formMap = computeForm(
+        results,
+        total.map((s) => s.team.id),
+      );
+      const full = total.map((s) => ({ ...s, form: formMap.get(s.team.id) ?? s.form }));
+      const { home, away } = computeHomeAwayStandings(full, results);
+      const withForm = (rows: Standing[]) =>
+        rows.map((r) => ({ ...r, form: formMap.get(r.team.id) ?? r.form }));
+      return {
+        full,
+        home: withForm(home),
+        away: withForm(away),
+        source: "live",
+        updatedAt: new Date().toISOString(),
+      };
+    } catch (err) {
+      console.error("getStandingsSplits: live fetch/compute failed, using fallback", err);
+    }
+  }
+  return {
+    full: getFallbackStandings(),
+    home: [],
+    away: [],
+    source: "fallback",
+    updatedAt: fallbackCapturedAt,
+  };
 }
 
 /** Falls back to matchday 5 — the next scheduled round per the spec's seed

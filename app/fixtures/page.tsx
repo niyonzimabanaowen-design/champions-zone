@@ -27,7 +27,7 @@ export default async function FixturesPage({
     <div>
       <ParallaxHeader
         src="/images/fixtures/floodlights.jpg"
-        alt="Stadium floodlight towers against a clear sky"
+        alt="Close-up of stadium floodlight towers lit up against a dark night sky"
         eyebrow="League Phase"
         title="Fixtures & Results"
       />

@@ -2,6 +2,7 @@ import "server-only";
 
 import type { Match, MatchStatus, Scorer, Standing, Team } from "@/types";
 import { zoneForPosition } from "@/lib/zone";
+import type { FinishedResult } from "@/lib/standings-splits";
 
 /**
  * Server-only football-data.org v4 helpers for competition CL (UEFA
@@ -174,6 +175,24 @@ export async function fetchMatches(matchday?: number): Promise<Match[]> {
     awayTeam: m.awayTeam,
     score: m.score,
   }));
+}
+
+/** All finished league-phase results, for deriving real home/away splits and
+ * form guides client-side (see lib/standings-splits.ts). */
+export async function fetchFinishedResults(): Promise<FinishedResult[]> {
+  const data = await footballDataFetch<RawMatchesResponse>(
+    `/competitions/${COMPETITION}/matches?status=FINISHED`,
+  );
+
+  return data.matches
+    .filter((m) => m.score.fullTime.home !== null && m.score.fullTime.away !== null)
+    .map((m) => ({
+      homeTeam: m.homeTeam,
+      awayTeam: m.awayTeam,
+      homeGoals: m.score.fullTime.home as number,
+      awayGoals: m.score.fullTime.away as number,
+      utcDate: m.utcDate,
+    }));
 }
 
 interface RawScorersResponse {
