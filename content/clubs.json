@@ -5,5 +5,10 @@
   "barca": { "stadiumPhoto": "/images/clubs/barca.jpg" },
   "aston-villa": { "stadiumPhoto": "/images/clubs/aston-villa.jpg" },
   "man-city": { "stadiumPhoto": "/images/clubs/man-city.jpg" },
-  "liverpool": { "stadiumPhoto": "/images/clubs/liverpool.jpg" }
+  "liverpool": { "stadiumPhoto": "/images/clubs/liverpool.jpg" },
+  "psg": {
+    "stadiumPhoto": "/images/clubs/psg.jpg",
+    "generic": true,
+    "alt": "Stadium floodlights lit up against a dark night sky"
+  }
 }

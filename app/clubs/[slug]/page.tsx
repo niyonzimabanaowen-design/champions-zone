@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getClubDetail } from "@/lib/data";
-import { getClubStadiumPhoto } from "@/lib/club-content";
+import { getClubPhotoMeta } from "@/lib/club-content";
 import { getClubAccentColor } from "@/lib/club-color";
 import { ClubCrest } from "@/components/sections/ClubCrest";
 import { MatchCard } from "@/components/sections/MatchCard";
@@ -46,7 +46,12 @@ export default async function ClubPage({
   }
 
   const { team, standing, matches, topScorer, positionHistory } = result;
-  const stadiumPhoto = getClubStadiumPhoto(team.slug);
+  const photoMeta = getClubPhotoMeta(team.slug);
+  const stadiumPhoto = photoMeta?.stadiumPhoto;
+  const stadiumPhotoAlt =
+    photoMeta?.generic && photoMeta.alt
+      ? photoMeta.alt
+      : `${team.venue ?? team.name}'s stadium`;
   const accent = getClubAccentColor(team.clubColors);
 
   const finished = matches.filter((m) => m.status === "FINISHED");
@@ -59,7 +64,7 @@ export default async function ClubPage({
           {stadiumPhoto ? (
             <Image
               src={stadiumPhoto}
-              alt={`${team.venue ?? team.name}'s stadium`}
+              alt={stadiumPhotoAlt}
               fill
               priority
               sizes="100vw"
