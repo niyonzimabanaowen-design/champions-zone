@@ -110,5 +110,45 @@
     "sourceUrl": "https://www.pexels.com/photo/close-up-of-a-soccer-ball-in-the-goal-19436350/",
     "license": "Pexels License",
     "licenseUrl": "https://www.pexels.com/license/"
+  },
+  {
+    "file": "/images/history/trophy.jpg",
+    "title": "Close-up of a Trophy",
+    "author": "RDNE Stock project",
+    "sourceUrl": "https://www.pexels.com/photo/close-up-of-a-trophy-7005501/",
+    "license": "Pexels License",
+    "licenseUrl": "https://www.pexels.com/license/"
+  },
+  {
+    "file": "/images/history/istanbul-2023.jpg",
+    "title": "Atatürk Olympic Stadium view from east",
+    "author": "Zach1055",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Atat%C3%BCrk_Olympic_Stadium_view_from_east_2026.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  {
+    "file": "/images/history/wembley-2024.jpg",
+    "title": "Wembley Stadium at night",
+    "author": "Martin Pettitt",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:WembleyStadiumNight.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  {
+    "file": "/images/history/munich-2025.jpg",
+    "title": "Allianz Arena at night",
+    "author": "Richard Bartz",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Allianz_arena_at_night_Richard_Bartz.jpg",
+    "license": "CC BY-SA 2.5",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5"
+  },
+  {
+    "file": "/images/history/budapest-2026.jpg",
+    "title": "Puskás Aréna - exterior",
+    "author": "Salome mi",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pusk%C3%A1s_Ar%C3%A9na_-_exterior.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   }
 ]

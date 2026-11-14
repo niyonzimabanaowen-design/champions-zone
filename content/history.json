@@ -1,0 +1,69 @@
+{
+  "finals": [
+    {
+      "year": 2023,
+      "winner": "Manchester City",
+      "runnerUp": "Inter Milan",
+      "score": "1–0",
+      "city": "Istanbul",
+      "stadium": "Atatürk Olympic Stadium",
+      "photo": "/images/history/istanbul-2023.jpg"
+    },
+    {
+      "year": 2024,
+      "winner": "Real Madrid",
+      "runnerUp": "Borussia Dortmund",
+      "score": "2–0",
+      "city": "London",
+      "stadium": "Wembley Stadium",
+      "photo": "/images/history/wembley-2024.jpg"
+    },
+    {
+      "year": 2025,
+      "winner": "Paris Saint-Germain",
+      "runnerUp": "Inter Milan",
+      "score": "5–0",
+      "city": "Munich",
+      "stadium": "Allianz Arena",
+      "photo": "/images/history/munich-2025.jpg",
+      "note": "The largest winning margin in a European Cup/Champions League final."
+    },
+    {
+      "year": 2026,
+      "winner": "Paris Saint-Germain",
+      "runnerUp": "Arsenal",
+      "score": "Won on penalties",
+      "city": "Budapest",
+      "stadium": "Puskás Aréna",
+      "photo": "/images/history/budapest-2026.jpg"
+    }
+  ],
+  "titlesByClub": [
+    { "club": "Real Madrid", "titles": 15 },
+    { "club": "AC Milan", "titles": 7 },
+    { "club": "Liverpool", "titles": 6 },
+    { "club": "Bayern München", "titles": 6 },
+    { "club": "Barcelona", "titles": 5 },
+    { "club": "Ajax", "titles": 4 },
+    { "club": "Inter Milan", "titles": 3 },
+    { "club": "Manchester United", "titles": 3 }
+  ],
+  "records": {
+    "mostGoals": { "name": "Cristiano Ronaldo", "value": "140 goals" },
+    "mostAppearances": { "name": "Cristiano Ronaldo", "value": "183 appearances" },
+    "mostTitlesClub": { "name": "Real Madrid", "value": "15 titles" },
+    "biggestFinalWin": {
+      "name": "Paris Saint-Germain 5–0 Inter Milan (2025, Munich)",
+      "value": "5-goal margin"
+    }
+  },
+  "format": [
+    { "stage": "League Phase", "description": "36 clubs, 8 matches each against different opponents, in one combined table." },
+    { "stage": "Knockout Play-off", "description": "Clubs finishing 9th–24th in the league phase play a two-legged play-off for a round of 16 spot." },
+    { "stage": "Round of 16", "description": "Two-legged ties between the top 8 and the play-off winners." },
+    { "stage": "Quarter-finals", "description": "Two-legged ties." },
+    { "stage": "Semi-finals", "description": "Two-legged ties." },
+    { "stage": "Final", "description": "A single match at a neutral venue — Estadio Metropolitano, Madrid in 2027." }
+  ],
+  "sourceNote": "Finals 2023–2025 and all-time records are real UEFA Champions League history (sourced from UEFA.com and Wikipedia). The 2026 final result is this site's own fictional seed data from the build spec."
+}
