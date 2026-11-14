@@ -22,7 +22,7 @@ import {
   computePositionHistory,
   type PositionAtMatchday,
 } from "@/lib/standings-splits";
-import type { Match, Scorer, Standing, Team } from "@/types";
+import type { Match, Scorer, Standing, Team, TeamRef } from "@/types";
 
 export interface DataResult<T> {
   data: T;
@@ -211,3 +211,121 @@ export const getClubDetail = cache(async (slug: string): Promise<ClubDetailResul
     return "unavailable";
   }
 });
+
+export interface BigWin {
+  homeTeam: TeamRef;
+  awayTeam: TeamRef;
+  homeGoals: number;
+  awayGoals: number;
+  matchday: number;
+}
+
+export interface CleanSheetEntry {
+  team: TeamRef;
+  count: number;
+}
+
+export interface StatsOverview {
+  topScorers: Scorer[];
+  topAssists: Scorer[];
+  /** Every scorer fetched (up to 100), for the player comparison picker's
+   * pool — wider than the top-10 leaderboards. */
+  allScorers: Scorer[];
+  goalsByMatchday: { matchday: number; goals: number }[];
+  biggestWins: BigWin[];
+  cleanSheets: CleanSheetEntry[];
+  source: "live" | "fallback";
+  updatedAt: string;
+}
+
+/**
+ * Everything on the Stats Center, all derived from real data: the scorers
+ * endpoint (fetched with a high limit so assists/clean-sheets have a
+ * reasonable pool to work from) and the 72 finished results, aggregated
+ * client-side for goals-per-matchday, biggest wins, and clean sheets — none
+ * of which football-data.org exposes directly as an endpoint.
+ */
+export async function getStatsOverview(): Promise<StatsOverview> {
+  if (hasApiKey()) {
+    try {
+      const [scorers, results] = await Promise.all([fetchScorers(100), fetchFinishedResults()]);
+
+      const topScorers = [...scorers].sort((a, b) => b.goals - a.goals).slice(0, 10);
+      const topAssists = scorers
+        .filter((s) => (s.assists ?? 0) > 0)
+        .sort((a, b) => (b.assists ?? 0) - (a.assists ?? 0))
+        .slice(0, 10);
+
+      const goalsByMatchdayMap = new Map<number, number>();
+      for (const r of results) {
+        goalsByMatchdayMap.set(
+          r.matchday,
+          (goalsByMatchdayMap.get(r.matchday) ?? 0) + r.homeGoals + r.awayGoals,
+        );
+      }
+      const goalsByMatchday = [...goalsByMatchdayMap.entries()]
+        .sort((a, b) => a[0] - b[0])
+        .map(([matchday, goals]) => ({ matchday, goals }));
+
+      const biggestWins: BigWin[] = [...results]
+        .filter((r) => r.homeGoals !== r.awayGoals)
+        .sort(
+          (a, b) =>
+            Math.abs(b.homeGoals - b.awayGoals) - Math.abs(a.homeGoals - a.awayGoals),
+        )
+        .slice(0, 5)
+        .map((r) => ({
+          homeTeam: r.homeTeam,
+          awayTeam: r.awayTeam,
+          homeGoals: r.homeGoals,
+          awayGoals: r.awayGoals,
+          matchday: r.matchday,
+        }));
+
+      const cleanSheetMap = new Map<number, CleanSheetEntry>();
+      for (const r of results) {
+        if (r.awayGoals === 0) {
+          const entry = cleanSheetMap.get(r.homeTeam.id) ?? { team: r.homeTeam, count: 0 };
+          entry.count += 1;
+          cleanSheetMap.set(r.homeTeam.id, entry);
+        }
+        if (r.homeGoals === 0) {
+          const entry = cleanSheetMap.get(r.awayTeam.id) ?? { team: r.awayTeam, count: 0 };
+          entry.count += 1;
+          cleanSheetMap.set(r.awayTeam.id, entry);
+        }
+      }
+      const cleanSheets = [...cleanSheetMap.values()]
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 8);
+
+      return {
+        topScorers,
+        topAssists,
+        allScorers: [...scorers].sort((a, b) => b.goals - a.goals),
+        goalsByMatchday,
+        biggestWins,
+        cleanSheets,
+        source: "live",
+        updatedAt: new Date().toISOString(),
+      };
+    } catch (err) {
+      console.error("getStatsOverview: live fetch failed, using fallback", err);
+    }
+  }
+
+  const fallbackScorers = getFallbackScorers();
+  return {
+    topScorers: fallbackScorers,
+    topAssists: fallbackScorers
+      .filter((s) => (s.assists ?? 0) > 0)
+      .sort((a, b) => (b.assists ?? 0) - (a.assists ?? 0)),
+    allScorers: fallbackScorers,
+    // No real match-level fallback data exists to honestly derive these.
+    goalsByMatchday: [],
+    biggestWins: [],
+    cleanSheets: [],
+    source: "fallback",
+    updatedAt: fallbackCapturedAt,
+  };
+}
