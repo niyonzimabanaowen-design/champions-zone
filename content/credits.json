@@ -22,5 +22,21 @@
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Estadio_Wanda_Metropolitano_(2018).jpg",
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  {
+    "file": "/images/standings/aerial-pitch.jpg",
+    "title": "Aerial View of Soccer Field",
+    "author": "Mike",
+    "sourceUrl": "https://www.pexels.com/photo/aerial-view-of-soccer-field-1171084/",
+    "license": "Pexels License",
+    "licenseUrl": "https://www.pexels.com/license/"
+  },
+  {
+    "file": "/images/fixtures/floodlights.jpg",
+    "title": "Two Football Stadium Lights",
+    "author": "Toni Cuenca",
+    "sourceUrl": "https://www.pexels.com/photo/two-football-stadium-lights-776805/",
+    "license": "Pexels License",
+    "licenseUrl": "https://www.pexels.com/license/"
   }
 ]
