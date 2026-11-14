@@ -1,8 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getCurrentMatchday, getScorers, getStandings } from "@/lib/data";
 import { StandingsTable } from "@/components/sections/StandingsTable";
 import { TopScorers } from "@/components/sections/TopScorers";
 import { UpdatedBadge } from "@/components/sections/UpdatedBadge";
+import { Hero } from "@/components/sections/Hero";
 import scheduleSeed from "@/data/schedule.json";
 
 export default async function Home() {
@@ -13,34 +15,7 @@ export default async function Home() {
 
   return (
     <div>
-      <section className="border-b border-line bg-surface">
-        <div className="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-28 lg:px-8">
-          <p className="font-display text-sm uppercase tracking-[0.2em] text-accent">
-            2026/27 League Phase
-          </p>
-          <h1 className="mt-3 font-display text-5xl uppercase tracking-tight text-text sm:text-7xl">
-            UEFA Champions League
-          </h1>
-          <p className="mx-auto mt-4 max-w-xl text-muted">
-            Live standings, fixtures, and stats for the 2026/27 season — on
-            the road to the final at the Estadio Metropolitano, Madrid.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/standings"
-              className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-bg transition-opacity hover:opacity-90"
-            >
-              Live Table
-            </Link>
-            <Link
-              href="/fixtures"
-              className="rounded-full border border-line bg-surface-2 px-6 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-surface"
-            >
-              Fixtures
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Hero />
 
       <section className="border-b border-line">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-8 text-center sm:grid-cols-4 sm:px-6 lg:px-8">
@@ -86,8 +61,19 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="border-t border-line bg-surface">
-        <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
+      <section className="relative isolate overflow-hidden border-t border-line">
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src="/images/final/estadio-metropolitano-night.jpg"
+            alt="Estadio Metropolitano lit up at night during a match, Madrid"
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-bg/70" />
+          <div className="grain absolute inset-0" />
+        </div>
+        <div className="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8">
           <p className="font-display text-sm uppercase tracking-[0.2em] text-accent">
             Road to the Final
           </p>

@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "file": "/video/hero-stadium.mp4",
+    "title": "Football Match on Stadium",
+    "author": "Tio Nazih",
+    "sourceUrl": "https://www.pexels.com/video/football-match-on-stadium-11918917/",
+    "license": "Pexels License",
+    "licenseUrl": "https://www.pexels.com/license/"
+  },
+  {
+    "file": "/images/hero/stadium-crowd-night.jpg",
+    "title": "Football Fans Cheering on Stadium",
+    "author": "George Zografidis",
+    "sourceUrl": "https://www.pexels.com/photo/football-fans-cheering-on-stadium-14460275/",
+    "license": "Pexels License",
+    "licenseUrl": "https://www.pexels.com/license/"
+  },
+  {
+    "file": "/images/final/estadio-metropolitano-night.jpg",
+    "title": "Estadio Wanda Metropolitano (2018)",
+    "author": "Roberto (Wikimedia Commons user Badefa)",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Estadio_Wanda_Metropolitano_(2018).jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  }
+]

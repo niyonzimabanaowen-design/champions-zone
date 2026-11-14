@@ -1,0 +1,159 @@
+"use client";
+
+import { useLayoutEffect, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { gsap, SplitText } from "@/lib/gsap";
+import { useMediaQuery, usePrefersReducedMotion } from "@/lib/use-media-query";
+import { HeroLightLayer } from "@/components/three/HeroLightLayer";
+
+const INTRO_SESSION_KEY = "cz-intro-played";
+
+export function Hero() {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const labelRef = useRef<HTMLParagraphElement>(null);
+  const subRef = useRef<HTMLParagraphElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
+
+  const [introPlaying, setIntroPlaying] = useState(false);
+
+  const isTabletUp = useMediaQuery("(min-width: 640px)");
+  const reducedMotion = usePrefersReducedMotion();
+  const showVideo = isTabletUp && !reducedMotion;
+
+  useLayoutEffect(() => {
+    const alreadyPlayed =
+      typeof window !== "undefined" && sessionStorage.getItem(INTRO_SESSION_KEY) === "1";
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (alreadyPlayed || reduced || !headlineRef.current) {
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      const split = new SplitText(headlineRef.current, { type: "chars" });
+
+      gsap.set(overlayRef.current, { opacity: 1, pointerEvents: "auto" });
+      gsap.set(split.chars, { opacity: 0, y: 24 });
+      gsap.set([labelRef.current, subRef.current, ctaRef.current], { opacity: 0, y: 16 });
+
+      setIntroPlaying(true);
+
+      const tl = gsap.timeline({
+        defaults: { ease: "power2.out" },
+        onComplete: () => {
+          sessionStorage.setItem(INTRO_SESSION_KEY, "1");
+          gsap.set(overlayRef.current, { pointerEvents: "none" });
+          setIntroPlaying(false);
+          split.revert();
+        },
+      });
+      timelineRef.current = tl;
+
+      // Floodlights flickering on, then settling.
+      tl.to(overlayRef.current, { opacity: 0.55, duration: 0.09 })
+        .to(overlayRef.current, { opacity: 0.92, duration: 0.07 })
+        .to(overlayRef.current, { opacity: 0.3, duration: 0.12 })
+        .to(overlayRef.current, { opacity: 0.85, duration: 0.06 })
+        .to(overlayRef.current, { opacity: 0.15, duration: 0.1 })
+        .to(overlayRef.current, { opacity: 0, duration: 0.9, ease: "power2.inOut" })
+        .to(split.chars, { opacity: 1, y: 0, stagger: 0.025, duration: 0.6 }, "-=0.45")
+        .to(labelRef.current, { opacity: 1, y: 0, duration: 0.5 }, "-=0.55")
+        .to(subRef.current, { opacity: 1, y: 0, duration: 0.5 }, "-=0.35")
+        .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.5 }, "-=0.3");
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  function handleSkip() {
+    timelineRef.current?.progress(1);
+  }
+
+  return (
+    <section className="relative isolate overflow-hidden border-b border-line">
+      <div className="absolute inset-0 -z-20">
+        <Image
+          src="/images/hero/stadium-crowd-night.jpg"
+          alt="A packed stadium crowd under floodlights on a European night"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        {showVideo && (
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            poster="/images/hero/stadium-crowd-night.jpg"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          >
+            <source src="/video/hero-stadium.mp4" type="video/mp4" />
+          </video>
+        )}
+      </div>
+
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-bg via-bg/50 to-transparent" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-bg/70 via-bg/15 to-transparent" />
+      <div className="grain absolute inset-0 -z-10" />
+
+      <HeroLightLayer />
+
+      <div
+        ref={overlayRef}
+        className="pointer-events-none absolute inset-0 z-30 bg-bg opacity-0"
+        aria-hidden
+      />
+
+      {introPlaying && (
+        <button
+          type="button"
+          onClick={handleSkip}
+          className="absolute right-4 top-4 z-40 rounded-full border border-line/60 bg-bg/40 px-3 py-1.5 text-xs text-muted backdrop-blur-sm transition-colors hover:text-text sm:right-6 sm:top-6"
+        >
+          Skip intro
+        </button>
+      )}
+
+      <div className="relative z-20 mx-auto max-w-7xl px-4 py-24 text-center sm:px-6 sm:py-32 lg:px-8">
+        <p
+          ref={labelRef}
+          className="font-display text-sm uppercase tracking-[0.2em] text-accent"
+        >
+          2026/27 League Phase
+        </p>
+        <h1
+          ref={headlineRef}
+          className="mt-3 font-display text-5xl uppercase tracking-tight text-text sm:text-7xl"
+        >
+          UEFA Champions League
+        </h1>
+        <p ref={subRef} className="mx-auto mt-4 max-w-xl text-muted">
+          Live standings, fixtures, and stats for the 2026/27 season — on the
+          road to the final at the Estadio Metropolitano, Madrid.
+        </p>
+        <div ref={ctaRef} className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            href="/standings"
+            className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-bg transition-opacity hover:opacity-90"
+          >
+            Live Table
+          </Link>
+          <Link
+            href="/fixtures"
+            className="rounded-full border border-line bg-surface-2 px-6 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-surface"
+          >
+            Fixtures
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
