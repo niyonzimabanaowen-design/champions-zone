@@ -1,0 +1,102 @@
+{
+  "capturedAt": "2026-11-14T00:00:00Z",
+  "note": "Snapshot of the top 8 from the football-data.org v4 /competitions/CL/standings endpoint after matchday 4 (2026/27 league phase). Used only as a fallback when the live API is unavailable — the site prefers live data whenever FOOTBALL_DATA_API_KEY is set.",
+  "table": [
+    {
+      "position": 1,
+      "team": { "id": 524, "name": "Paris Saint-Germain FC", "shortName": "PSG", "tla": "PSG", "crest": "https://crests.football-data.org/524.png" },
+      "playedGames": 4,
+      "won": 4,
+      "draw": 0,
+      "lost": 0,
+      "points": 12,
+      "goalsFor": 20,
+      "goalsAgainst": 5,
+      "goalDifference": 15
+    },
+    {
+      "position": 2,
+      "team": { "id": 86, "name": "Real Madrid CF", "shortName": "Real Madrid", "tla": "RMA", "crest": "https://crests.football-data.org/86.png" },
+      "playedGames": 4,
+      "won": 4,
+      "draw": 0,
+      "lost": 0,
+      "points": 12,
+      "goalsFor": 13,
+      "goalsAgainst": 7,
+      "goalDifference": 6
+    },
+    {
+      "position": 3,
+      "team": { "id": 57, "name": "Arsenal FC", "shortName": "Arsenal", "tla": "ARS", "crest": "https://crests.football-data.org/57.png" },
+      "playedGames": 4,
+      "won": 3,
+      "draw": 1,
+      "lost": 0,
+      "points": 10,
+      "goalsFor": 8,
+      "goalsAgainst": 3,
+      "goalDifference": 5
+    },
+    {
+      "position": 4,
+      "team": { "id": 7397, "name": "Como 1907", "shortName": "Como 1907", "tla": "COM", "crest": "https://crests.football-data.org/7397.png" },
+      "playedGames": 4,
+      "won": 3,
+      "draw": 0,
+      "lost": 1,
+      "points": 9,
+      "goalsFor": 19,
+      "goalsAgainst": 6,
+      "goalDifference": 13
+    },
+    {
+      "position": 5,
+      "team": { "id": 81, "name": "FC Barcelona", "shortName": "Barça", "tla": "FCB", "crest": "https://crests.football-data.org/81.png" },
+      "playedGames": 4,
+      "won": 3,
+      "draw": 0,
+      "lost": 1,
+      "points": 9,
+      "goalsFor": 14,
+      "goalsAgainst": 6,
+      "goalDifference": 8
+    },
+    {
+      "position": 6,
+      "team": { "id": 58, "name": "Aston Villa FC", "shortName": "Aston Villa", "tla": "AVL", "crest": "https://crests.football-data.org/58.png" },
+      "playedGames": 4,
+      "won": 3,
+      "draw": 0,
+      "lost": 1,
+      "points": 9,
+      "goalsFor": 12,
+      "goalsAgainst": 6,
+      "goalDifference": 6
+    },
+    {
+      "position": 7,
+      "team": { "id": 65, "name": "Manchester City FC", "shortName": "Man City", "tla": "MCI", "crest": "https://crests.football-data.org/65.png" },
+      "playedGames": 4,
+      "won": 3,
+      "draw": 0,
+      "lost": 1,
+      "points": 9,
+      "goalsFor": 12,
+      "goalsAgainst": 7,
+      "goalDifference": 5
+    },
+    {
+      "position": 8,
+      "team": { "id": 64, "name": "Liverpool FC", "shortName": "Liverpool", "tla": "LIV", "crest": "https://crests.football-data.org/64.png" },
+      "playedGames": 4,
+      "won": 3,
+      "draw": 0,
+      "lost": 1,
+      "points": 9,
+      "goalsFor": 14,
+      "goalsAgainst": 10,
+      "goalDifference": 4
+    }
+  ]
+}

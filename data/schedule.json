@@ -1,0 +1,18 @@
+{
+  "note": "League-phase matchday windows and final details for the 2026/27 UEFA Champions League, confirmed against the football-data.org v4 API and the build spec.",
+  "matchdays": [
+    { "matchday": 5, "start": "2026-11-24", "end": "2026-11-25" },
+    { "matchday": 6, "start": "2026-12-08", "end": "2026-12-09" },
+    { "matchday": 7, "start": "2027-01-19", "end": "2027-01-20" },
+    { "matchday": 8, "start": "2027-01-27", "end": "2027-01-27" }
+  ],
+  "final": {
+    "date": "2027-06-05",
+    "venue": "Estadio Metropolitano",
+    "city": "Madrid"
+  },
+  "holders": {
+    "team": "PSG",
+    "note": "2025/26 champions, per the build spec."
+  }
+}

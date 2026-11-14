@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-11-14T00:00:00Z",
+  "note": "Snapshot of the top 5 from the football-data.org v4 /competitions/CL/scorers endpoint after matchday 4 (2026/27 league phase). Used only as a fallback when the live API is unavailable.",
+  "scorers": [
+    {
+      "player": { "id": 43285, "name": "Anastasios Douvikas", "nationality": "Greece" },
+      "team": { "id": 7397, "name": "Como 1907", "shortName": "Como 1907", "tla": "COM", "crest": "https://crests.football-data.org/7397.png" },
+      "goals": 6,
+      "assists": 1,
+      "playedMatches": 4
+    },
+    {
+      "player": { "id": 177321, "name": "Nicolo Tresoldi", "nationality": "Italy" },
+      "team": { "id": 851, "name": "Club Brugge KV", "shortName": "Club Brugge", "tla": "BRU", "crest": "https://crests.football-data.org/851.png" },
+      "goals": 5,
+      "assists": null,
+      "playedMatches": 4
+    },
+    {
+      "player": { "id": 38101, "name": "Erling Haaland", "nationality": "Norway" },
+      "team": { "id": 65, "name": "Manchester City FC", "shortName": "Man City", "tla": "MCI", "crest": "https://crests.football-data.org/65.png" },
+      "goals": 5,
+      "assists": null,
+      "playedMatches": 4
+    },
+    {
+      "player": { "id": 3374, "name": "Kylian Mbappé", "nationality": "France" },
+      "team": { "id": 86, "name": "Real Madrid CF", "shortName": "Real Madrid", "tla": "RMA", "crest": "https://crests.football-data.org/86.png" },
+      "goals": 4,
+      "assists": 1,
+      "playedMatches": 4
+    },
+    {
+      "player": { "id": 211, "name": "Sehrou Guirassy", "nationality": "Guinea" },
+      "team": { "id": 4, "name": "Borussia Dortmund", "shortName": "Dortmund", "tla": "BVB", "crest": "https://crests.football-data.org/4.png" },
+      "goals": 4,
+      "assists": null,
+      "playedMatches": 4
+    }
+  ]
+}
