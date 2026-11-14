@@ -150,5 +150,21 @@
     "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pusk%C3%A1s_Ar%C3%A9na_-_exterior.jpg",
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  {
+    "file": "/images/final/madrid-skyline.jpg",
+    "title": "Cityscape at Dusk",
+    "author": "Julio García Photos",
+    "sourceUrl": "https://www.pexels.com/photo/cityscape-at-dusk-4279197/",
+    "license": "Pexels License",
+    "licenseUrl": "https://www.pexels.com/license/"
+  },
+  {
+    "file": "/images/final/estadio-metropolitano-exterior.jpg",
+    "title": "Wanda-Metropolitano",
+    "author": "Fernandopascullo",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wanda-Metropolitano.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
   }
 ]
