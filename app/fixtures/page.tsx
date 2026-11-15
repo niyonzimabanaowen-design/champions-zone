@@ -18,8 +18,10 @@ export default async function FixturesPage({
   searchParams: Promise<{ md?: string }>;
 }) {
   const params = await searchParams;
-  const currentMatchday = await getCurrentMatchday();
-  const matchday = Number(params.md) || currentMatchday;
+  // Skips the extra currentMatchday API round trip whenever the matchday is
+  // already known from the URL (true for every tab click) — only the
+  // initial, tab-less visit needs that lookup.
+  const matchday = Number(params.md) || (await getCurrentMatchday());
 
   const { data: matches, source, updatedAt } = await getMatches(matchday);
 

@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { getStatsOverview } from "@/lib/data";
 import { ParallaxHeader } from "@/components/motion/ParallaxHeader";
 import { UpdatedBadge } from "@/components/sections/UpdatedBadge";
 import { Leaderboard } from "@/components/sections/Leaderboard";
-import { GoalsByMatchdayChart } from "@/components/sections/GoalsByMatchdayChart";
 import { BiggestWins } from "@/components/sections/BiggestWins";
 import { PlayerComparison } from "@/components/sections/PlayerComparison";
+
+// Recharts is a large dependency (~100KB gzipped) — split into its own chunk
+// rather than bundling it into this page's initial JS.
+const GoalsByMatchdayChart = dynamic(
+  () => import("@/components/sections/GoalsByMatchdayChart").then((m) => m.GoalsByMatchdayChart),
+);
 
 export const metadata: Metadata = {
   title: "Stats Center",

@@ -9,8 +9,15 @@ export const metadata: Metadata = {
 };
 
 export default async function PredictorPage() {
-  const currentMatchday = await getCurrentMatchday();
-  const { data: matches, source } = await getMatches(currentMatchday);
+  // Fetched in parallel rather than waiting on currentMatchday first: both
+  // calls hit the API regardless, so there's no reason to serialize them —
+  // getMatches() with no matchday filter is then narrowed down once we know
+  // which one is current.
+  const [currentMatchday, { data: allMatches, source }] = await Promise.all([
+    getCurrentMatchday(),
+    getMatches(),
+  ]);
+  const matches = allMatches.filter((m) => m.matchday === currentMatchday);
 
   return (
     <div>

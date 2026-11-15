@@ -21,6 +21,7 @@ export default function FinalPage() {
             alt="Estadio Metropolitano, Madrid, from outside"
             fill
             priority
+            fetchPriority="high"
             sizes="100vw"
             className="object-cover"
           />

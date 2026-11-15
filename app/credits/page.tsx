@@ -43,14 +43,14 @@ function CreditCard({ credit }: { credit: PhotoCredit }) {
     <div className="flex gap-4 rounded-2xl border border-line bg-surface p-4">
       <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-surface-2">
         {isVideo ? (
-          <video
-            src={credit.file}
-            className="h-full w-full object-cover"
-            muted
-            loop
-            autoPlay
-            playsInline
-            preload="metadata"
+          // A static poster frame, not a playing/downloading video — this is
+          // a small decorative thumbnail, not worth the full file size.
+          <Image
+            src="/images/hero/stadium-crowd-night.jpg"
+            alt=""
+            fill
+            sizes="112px"
+            className="object-cover"
           />
         ) : (
           <Image src={credit.file} alt="" fill sizes="112px" className="object-cover" />

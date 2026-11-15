@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { getClubDetail } from "@/lib/data";
 import { getClubPhotoMeta } from "@/lib/club-content";
 import { getClubAccentColor } from "@/lib/club-color";
 import { ClubCrest } from "@/components/sections/ClubCrest";
 import { MatchCard } from "@/components/sections/MatchCard";
-import { PositionChart } from "@/components/sections/PositionChart";
+
+// Recharts is a large dependency — split into its own chunk rather than
+// bundling it into this page's initial JS.
+const PositionChart = dynamic(() =>
+  import("@/components/sections/PositionChart").then((m) => m.PositionChart),
+);
 
 export async function generateMetadata({
   params,
@@ -67,6 +73,7 @@ export default async function ClubPage({
               alt={stadiumPhotoAlt}
               fill
               priority
+              fetchPriority="high"
               sizes="100vw"
               className="object-cover"
             />

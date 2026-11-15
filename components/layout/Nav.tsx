@@ -27,6 +27,7 @@ export function Nav() {
               <li key={link.href}>
                 <Link
                   href={link.href}
+                  prefetch={false}
                   className="text-sm text-muted transition-colors hover:text-text"
                 >
                   {link.label}

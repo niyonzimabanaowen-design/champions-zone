@@ -3,8 +3,9 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { gsap, SplitText } from "@/lib/gsap";
+import type gsap from "gsap";
 import { useMediaQuery, usePrefersReducedMotion } from "@/lib/use-media-query";
+import { useIdle } from "@/lib/use-idle";
 import { HeroLightLayer } from "@/components/three/HeroLightLayer";
 import { Magnetic } from "@/components/motion/Magnetic";
 
@@ -22,7 +23,10 @@ export function Hero() {
 
   const isTabletUp = useMediaQuery("(min-width: 640px)");
   const reducedMotion = usePrefersReducedMotion();
-  const showVideo = isTabletUp && !reducedMotion;
+  const idle = useIdle();
+  // Deferred until idle so the 5MB video never competes with the poster
+  // image for bandwidth during the critical first paint / LCP window.
+  const showVideo = isTabletUp && !reducedMotion && idle;
 
   useLayoutEffect(() => {
     const alreadyPlayed =
@@ -30,45 +34,63 @@ export function Hero() {
     const reduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Mobile never gets the video/3D payoff behind the flicker reveal, so the
+    // SplitText + timeline CPU cost isn't earning its keep there — skip
+    // straight to the final visible state, same as reduced motion.
+    const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 639px)").matches;
 
-    if (alreadyPlayed || reduced || !headlineRef.current) {
+    if (alreadyPlayed || reduced || isMobile || !headlineRef.current) {
       return;
     }
 
-    const ctx = gsap.context(() => {
-      const split = new SplitText(headlineRef.current, { type: "chars" });
+    let revert: (() => void) | undefined;
+    let cancelled = false;
 
-      gsap.set(overlayRef.current, { opacity: 1, pointerEvents: "auto" });
-      gsap.set(split.chars, { opacity: 0, y: 24 });
-      gsap.set([labelRef.current, subRef.current, ctaRef.current], { opacity: 0, y: 16 });
+    // Dynamically imported so the gsap/SplitText module — and its real
+    // registration cost at evaluation time — never loads on mobile or
+    // reduced-motion, rather than just skipping the calls that use it.
+    import("@/lib/gsap-split-text").then(({ gsap, SplitText }) => {
+      if (cancelled || !headlineRef.current) return;
 
-      setIntroPlaying(true);
+      const ctx = gsap.context(() => {
+        const split = new SplitText(headlineRef.current, { type: "chars" });
 
-      const tl = gsap.timeline({
-        defaults: { ease: "power2.out" },
-        onComplete: () => {
-          sessionStorage.setItem(INTRO_SESSION_KEY, "1");
-          gsap.set(overlayRef.current, { pointerEvents: "none" });
-          setIntroPlaying(false);
-          split.revert();
-        },
+        gsap.set(overlayRef.current, { opacity: 1, pointerEvents: "auto" });
+        gsap.set(split.chars, { opacity: 0, y: 24 });
+        gsap.set([labelRef.current, subRef.current, ctaRef.current], { opacity: 0, y: 16 });
+
+        setIntroPlaying(true);
+
+        const tl = gsap.timeline({
+          defaults: { ease: "power2.out" },
+          onComplete: () => {
+            sessionStorage.setItem(INTRO_SESSION_KEY, "1");
+            gsap.set(overlayRef.current, { pointerEvents: "none" });
+            setIntroPlaying(false);
+            split.revert();
+          },
+        });
+        timelineRef.current = tl;
+
+        // Floodlights flickering on, then settling.
+        tl.to(overlayRef.current, { opacity: 0.55, duration: 0.09 })
+          .to(overlayRef.current, { opacity: 0.92, duration: 0.07 })
+          .to(overlayRef.current, { opacity: 0.3, duration: 0.12 })
+          .to(overlayRef.current, { opacity: 0.85, duration: 0.06 })
+          .to(overlayRef.current, { opacity: 0.15, duration: 0.1 })
+          .to(overlayRef.current, { opacity: 0, duration: 0.9, ease: "power2.inOut" })
+          .to(split.chars, { opacity: 1, y: 0, stagger: 0.025, duration: 0.6 }, "-=0.45")
+          .to(labelRef.current, { opacity: 1, y: 0, duration: 0.5 }, "-=0.55")
+          .to(subRef.current, { opacity: 1, y: 0, duration: 0.5 }, "-=0.35")
+          .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.5 }, "-=0.3");
       });
-      timelineRef.current = tl;
-
-      // Floodlights flickering on, then settling.
-      tl.to(overlayRef.current, { opacity: 0.55, duration: 0.09 })
-        .to(overlayRef.current, { opacity: 0.92, duration: 0.07 })
-        .to(overlayRef.current, { opacity: 0.3, duration: 0.12 })
-        .to(overlayRef.current, { opacity: 0.85, duration: 0.06 })
-        .to(overlayRef.current, { opacity: 0.15, duration: 0.1 })
-        .to(overlayRef.current, { opacity: 0, duration: 0.9, ease: "power2.inOut" })
-        .to(split.chars, { opacity: 1, y: 0, stagger: 0.025, duration: 0.6 }, "-=0.45")
-        .to(labelRef.current, { opacity: 1, y: 0, duration: 0.5 }, "-=0.55")
-        .to(subRef.current, { opacity: 1, y: 0, duration: 0.5 }, "-=0.35")
-        .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.5 }, "-=0.3");
+      revert = () => ctx.revert();
     });
 
-    return () => ctx.revert();
+    return () => {
+      cancelled = true;
+      revert?.();
+    };
   }, []);
 
   function handleSkip() {
@@ -83,18 +105,20 @@ export function Hero() {
           alt="A packed stadium crowd under floodlights on a European night"
           fill
           priority
+          fetchPriority="high"
           sizes="100vw"
           className="object-cover"
         />
         {showVideo && (
           <video
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700"
             poster="/images/hero/stadium-crowd-night.jpg"
             autoPlay
             muted
             loop
             playsInline
             preload="metadata"
+            onPlaying={(e) => e.currentTarget.classList.add("opacity-100")}
           >
             <source src="/video/hero-stadium.mp4" type="video/mp4" />
           </video>

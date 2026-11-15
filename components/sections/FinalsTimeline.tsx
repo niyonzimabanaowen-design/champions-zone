@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
-import { gsap } from "@/lib/gsap";
+import type { CSSProperties } from "react";
 
 export interface Final {
   year: number;
@@ -16,12 +16,14 @@ export interface Final {
 }
 
 /**
- * Scroll-pinned "Road to the Final" story: a CSS-sticky panel stays put
- * while the page scrolls through a tall track behind it, and GSAP
+ * Scroll-pinned "Road to the Final" story on sm+ screens: a CSS-sticky panel
+ * stays put while the page scrolls through a tall track behind it, and GSAP
  * (scrubbed to scroll position) crossfades each final's photo + caption in
- * turn. Sticky positioning does the actual pinning — GSAP only drives the
- * crossfade — so the section still degrades gracefully (just stacks
- * normally) if JS or ScrollTrigger doesn't run.
+ * turn. Below sm, the pin/crossfade/ScrollTrigger setup is skipped entirely
+ * (measurably expensive on throttled mobile CPUs for a short scroll
+ * distance that wouldn't read well anyway) in favor of a plain stacked
+ * gallery — pure CSS via the sm: breakpoint, so this degrades correctly even
+ * without JS.
  */
 export function FinalsTimeline({ finals }: { finals: Final[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -30,46 +32,64 @@ export function FinalsTimeline({ finals }: { finals: Final[] }) {
 
   useLayoutEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile = window.matchMedia("(max-width: 639px)").matches;
     const slides = slideRefs.current.filter((el): el is HTMLDivElement => el !== null);
     const markers = markerRefs.current.filter((el): el is HTMLDivElement => el !== null);
-    if (reducedMotion || !trackRef.current || slides.length === 0) return;
+    if (reducedMotion || isMobile || !trackRef.current || slides.length === 0) return;
 
-    const ctx = gsap.context(() => {
-      gsap.set(slides.slice(1), { opacity: 0 });
-      gsap.set(markers.slice(1), { opacity: 0.4, scale: 0.9 });
+    let revert: (() => void) | undefined;
+    let cancelled = false;
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: trackRef.current,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.5,
-        },
-      });
+    // Dynamically imported so the gsap/ScrollTrigger module — and its
+    // real registration cost at evaluation time — never loads on mobile or
+    // reduced-motion, rather than just skipping the calls that use it.
+    import("@/lib/gsap-scroll-trigger").then(({ gsap }) => {
+      if (cancelled || !trackRef.current) return;
+      const ctx = gsap.context(() => {
+        gsap.set(slides.slice(1), { opacity: 0 });
+        gsap.set(markers.slice(1), { opacity: 0.4, scale: 0.9 });
 
-      slides.forEach((slide, i) => {
-        if (i === 0) return;
-        const pos = i - 1;
-        tl.to(slides[i - 1], { opacity: 0, duration: 1 }, pos)
-          .to(slide, { opacity: 1, duration: 1 }, pos)
-          .to(markers[i - 1], { opacity: 0.4, scale: 0.9, duration: 0.5 }, pos)
-          .to(markers[i], { opacity: 1, scale: 1, duration: 0.5 }, pos);
-      });
-    }, trackRef);
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: trackRef.current,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.5,
+          },
+        });
 
-    return () => ctx.revert();
+        slides.forEach((slide, i) => {
+          if (i === 0) return;
+          const pos = i - 1;
+          tl.to(slides[i - 1], { opacity: 0, duration: 1 }, pos)
+            .to(slide, { opacity: 1, duration: 1 }, pos)
+            .to(markers[i - 1], { opacity: 0.4, scale: 0.9, duration: 0.5 }, pos)
+            .to(markers[i], { opacity: 1, scale: 1, duration: 0.5 }, pos);
+        });
+      }, trackRef);
+      revert = () => ctx.revert();
+    });
+
+    return () => {
+      cancelled = true;
+      revert?.();
+    };
   }, [finals.length]);
 
+  const trackStyle = { "--track-h": `${finals.length * 100}vh` } as CSSProperties;
+
   return (
-    <div ref={trackRef} style={{ height: `${finals.length * 100}vh` }} className="relative">
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <div ref={trackRef} style={trackStyle} className="relative sm:h-[var(--track-h)]">
+      <div className="static overflow-visible sm:sticky sm:top-0 sm:h-screen sm:overflow-hidden">
         {finals.map((f, i) => (
           <div
             key={f.year}
             ref={(el) => {
               slideRefs.current[i] = el;
             }}
-            className="absolute inset-0"
+            className={`relative mb-4 h-[70vh] sm:absolute sm:inset-0 sm:mb-0 sm:h-auto ${
+              i === 0 ? "" : "sm:opacity-0"
+            }`}
           >
             <Image
               src={f.photo}
@@ -77,6 +97,8 @@ export function FinalsTimeline({ finals }: { finals: Final[] }) {
               fill
               sizes="100vw"
               priority={i === 0}
+              fetchPriority={i === 0 ? "high" : "low"}
+              loading={i === 0 ? "eager" : "lazy"}
               className="object-cover"
             />
             <div className="absolute inset-0 bg-bg/60" />
@@ -97,7 +119,7 @@ export function FinalsTimeline({ finals }: { finals: Final[] }) {
           </div>
         ))}
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex justify-center gap-2">
+        <div className="pointer-events-none absolute inset-x-0 bottom-8 z-20 hidden justify-center gap-2 sm:flex">
           {finals.map((f, i) => (
             <div
               key={f.year}
