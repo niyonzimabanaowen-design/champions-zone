@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { RouteTransitions } from "@/components/motion/RouteTransitions";
 import { CustomCursor } from "@/components/motion/CustomCursor";
+import { ConsoleSignature } from "@/components/ConsoleSignature";
 import "./globals.css";
 
 const barlowCondensed = Barlow_Condensed({
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
   },
   description:
     "An unofficial fan hub for the UEFA Champions League 2026/27 season: live standings, fixtures, stats, and the road to the Madrid 2027 final.",
+  authors: [{ name: "Bana Owen" }],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -38,6 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-bg text-text">
         <TooltipProvider delayDuration={150}>
+          <ConsoleSignature />
           <CustomCursor />
           <Nav />
           <main className="flex-1">

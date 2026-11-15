@@ -34,6 +34,13 @@ export function Footer() {
             </nav>
           </div>
         </div>
+        <div className="mt-8 border-t border-line pt-6 text-xs text-muted">
+          Designed &amp; built by{" "}
+          <Link href="/about" className="text-muted underline-offset-2 hover:text-text hover:underline">
+            Bana Owen
+          </Link>{" "}
+          · © 2026
+        </div>
       </div>
     </footer>
   );
