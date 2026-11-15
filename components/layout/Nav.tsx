@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MobileMenu } from "@/components/layout/MobileMenu";
 
 const LINKS = [
   { href: "/standings", label: "Standings" },
@@ -33,6 +34,7 @@ export function Nav() {
               </li>
             ))}
           </ul>
+          <MobileMenu links={LINKS} />
         </nav>
       </div>
     </header>
