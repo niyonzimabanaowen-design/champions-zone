@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { useMediaQuery } from "@/lib/use-media-query";
 import type { Standing, Zone } from "@/types";
 
 const ZONE_LABEL: Record<Zone, string> = {
@@ -28,6 +29,13 @@ export function StandingsTable({
   standings: Standing[];
   deltas?: Map<number, number>;
 }) {
+  // On phones, skip the Motion layout-reorder animation and the delta-arrow
+  // enter/exit transition across all 36 rows — same information, instant
+  // re-sort instead, which is both simpler motion for a small screen and a
+  // lot less main-thread work at once.
+  const isPhone = useMediaQuery("(max-width: 639px)");
+  const animated = !isPhone;
+
   return (
     <div className="overflow-hidden rounded-2xl border border-line">
       <div className="overflow-x-auto">
@@ -48,95 +56,15 @@ export function StandingsTable({
             </tr>
           </thead>
           <tbody>
-            {standings.map((row, idx) => {
-              const delta = deltas?.get(row.team.id);
-              return (
-                <motion.tr
-                  key={row.team.id}
-                  layout
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="border-b border-line/60 transition-colors last:border-b-0 hover:bg-surface-2"
-                >
-                  <td className="relative px-3 py-2.5 text-center tabular text-muted">
-                    <span
-                      className={`absolute left-0 top-0 h-full w-0.5 ${ZONE_DOT[row.zone]}`}
-                      aria-hidden
-                    />
-                    <span className="inline-flex items-center gap-1">
-                      {idx + 1}
-                      <AnimatePresence>
-                        {delta !== undefined && delta !== 0 && (
-                          <motion.span
-                            initial={{ opacity: 0, y: 4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0 }}
-                            className={`inline-flex items-center text-[10px] font-semibold ${
-                              delta > 0 ? "text-qualify" : "text-out"
-                            }`}
-                          >
-                            {delta > 0 ? (
-                              <ArrowUp className="h-3 w-3" />
-                            ) : (
-                              <ArrowDown className="h-3 w-3" />
-                            )}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </span>
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <div className="flex items-center gap-2.5">
-                      <Image
-                        src={row.team.crest}
-                        alt={`${row.team.name} crest`}
-                        width={22}
-                        height={22}
-                        className="h-5.5 w-5.5 shrink-0 object-contain"
-                      />
-                      <span className="truncate text-text">{row.team.shortName}</span>
-                    </div>
-                  </td>
-                  <td className="tabular px-2 py-2.5 text-center text-muted">
-                    {row.playedGames}
-                  </td>
-                  <td className="tabular px-2 py-2.5 text-center text-muted">{row.won}</td>
-                  <td className="tabular px-2 py-2.5 text-center text-muted">{row.draw}</td>
-                  <td className="tabular px-2 py-2.5 text-center text-muted">{row.lost}</td>
-                  <td className="tabular px-2 py-2.5 text-center text-muted">{row.goalsFor}</td>
-                  <td className="tabular px-2 py-2.5 text-center text-muted">
-                    {row.goalsAgainst}
-                  </td>
-                  <td className="tabular px-2 py-2.5 text-center text-muted">
-                    {row.goalDifference > 0 ? `+${row.goalDifference}` : row.goalDifference}
-                  </td>
-                  <td className="tabular px-3 py-2.5 text-center font-semibold text-text">
-                    {row.points}
-                  </td>
-                  <td className="px-3 py-2.5">
-                    {row.form && row.form.length > 0 ? (
-                      <div className="flex gap-1">
-                        {row.form.map((r, i) => (
-                          <span
-                            key={i}
-                            className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-semibold ${
-                              r === "W"
-                                ? "bg-qualify/20 text-qualify"
-                                : r === "D"
-                                  ? "bg-playoff/20 text-playoff"
-                                  : "bg-out/20 text-out"
-                            }`}
-                          >
-                            {r}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-xs text-muted">—</span>
-                    )}
-                  </td>
-                </motion.tr>
-              );
-            })}
+            {standings.map((row, idx) => (
+              <StandingsRow
+                key={row.team.id}
+                row={row}
+                idx={idx}
+                delta={deltas?.get(row.team.id)}
+                animated={animated}
+              />
+            ))}
           </tbody>
         </table>
       </div>
@@ -149,5 +77,120 @@ export function StandingsTable({
         ))}
       </div>
     </div>
+  );
+}
+
+function StandingsRow({
+  row,
+  idx,
+  delta,
+  animated,
+}: {
+  row: Standing;
+  idx: number;
+  delta?: number;
+  animated: boolean;
+}) {
+  const hasDelta = delta !== undefined && delta !== 0;
+  const arrowIcon =
+    delta !== undefined && delta > 0 ? (
+      <ArrowUp className="h-3 w-3" />
+    ) : (
+      <ArrowDown className="h-3 w-3" />
+    );
+  const arrowClass = `inline-flex items-center text-[10px] font-semibold ${
+    delta !== undefined && delta > 0 ? "text-qualify" : "text-out"
+  }`;
+
+  const cells = (
+    <>
+      <td className="relative px-3 py-2.5 text-center tabular text-muted">
+        <span
+          className={`absolute left-0 top-0 h-full w-0.5 ${ZONE_DOT[row.zone]}`}
+          aria-hidden
+        />
+        <span className="inline-flex items-center gap-1">
+          {idx + 1}
+          {animated ? (
+            <AnimatePresence>
+              {hasDelta && (
+                <motion.span
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className={arrowClass}
+                >
+                  {arrowIcon}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          ) : (
+            hasDelta && <span className={arrowClass}>{arrowIcon}</span>
+          )}
+        </span>
+      </td>
+      <td className="px-3 py-2.5">
+        <div className="flex items-center gap-2.5">
+          <Image
+            src={row.team.crest}
+            alt={`${row.team.name} crest`}
+            width={22}
+            height={22}
+            className="h-5.5 w-5.5 shrink-0 object-contain"
+          />
+          <span className="truncate text-text">{row.team.shortName}</span>
+        </div>
+      </td>
+      <td className="tabular px-2 py-2.5 text-center text-muted">{row.playedGames}</td>
+      <td className="tabular px-2 py-2.5 text-center text-muted">{row.won}</td>
+      <td className="tabular px-2 py-2.5 text-center text-muted">{row.draw}</td>
+      <td className="tabular px-2 py-2.5 text-center text-muted">{row.lost}</td>
+      <td className="tabular px-2 py-2.5 text-center text-muted">{row.goalsFor}</td>
+      <td className="tabular px-2 py-2.5 text-center text-muted">{row.goalsAgainst}</td>
+      <td className="tabular px-2 py-2.5 text-center text-muted">
+        {row.goalDifference > 0 ? `+${row.goalDifference}` : row.goalDifference}
+      </td>
+      <td className="tabular px-3 py-2.5 text-center font-semibold text-text">{row.points}</td>
+      <td className="px-3 py-2.5">
+        {row.form && row.form.length > 0 ? (
+          <div className="flex gap-1">
+            {row.form.map((r, i) => (
+              <span
+                key={i}
+                className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-semibold ${
+                  r === "W"
+                    ? "bg-qualify/20 text-qualify"
+                    : r === "D"
+                      ? "bg-playoff/20 text-playoff"
+                      : "bg-out/20 text-out"
+                }`}
+              >
+                {r}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <span className="text-xs text-muted">—</span>
+        )}
+      </td>
+    </>
+  );
+
+  if (animated) {
+    return (
+      <motion.tr
+        layout
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="border-b border-line/60 transition-colors last:border-b-0 hover:bg-surface-2"
+      >
+        {cells}
+      </motion.tr>
+    );
+  }
+
+  return (
+    <tr className="border-b border-line/60 transition-colors last:border-b-0 hover:bg-surface-2">
+      {cells}
+    </tr>
   );
 }

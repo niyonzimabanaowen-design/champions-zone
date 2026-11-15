@@ -7,9 +7,11 @@ import { getClubPhotoMeta } from "@/lib/club-content";
 import { getClubAccentColor } from "@/lib/club-color";
 import { ClubCrest } from "@/components/sections/ClubCrest";
 import { MatchCard } from "@/components/sections/MatchCard";
+import { InView } from "@/components/motion/InView";
 
-// Recharts is a large dependency — split into its own chunk rather than
-// bundling it into this page's initial JS.
+// Recharts is a large dependency — split into its own chunk and, below, only
+// mounted once scrolled into view, rather than bundling or fetching it as
+// part of this page's initial load.
 const PositionChart = dynamic(() =>
   import("@/components/sections/PositionChart").then((m) => m.PositionChart),
 );
@@ -173,7 +175,9 @@ export default async function ClubPage({
               Position by Matchday
             </h2>
             <div className="rounded-2xl border border-line bg-surface p-5">
-              <PositionChart data={positionHistory} />
+              <InView fallback={<div className="h-48 w-full animate-pulse rounded-xl bg-surface-2" />}>
+                <PositionChart data={positionHistory} />
+              </InView>
             </div>
           </div>
         </div>

@@ -2,15 +2,19 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { getStatsOverview } from "@/lib/data";
 import { ParallaxHeader } from "@/components/motion/ParallaxHeader";
+import { InView } from "@/components/motion/InView";
 import { UpdatedBadge } from "@/components/sections/UpdatedBadge";
 import { Leaderboard } from "@/components/sections/Leaderboard";
 import { BiggestWins } from "@/components/sections/BiggestWins";
-import { PlayerComparison } from "@/components/sections/PlayerComparison";
 
-// Recharts is a large dependency (~100KB gzipped) — split into its own chunk
-// rather than bundling it into this page's initial JS.
+// Recharts (~100KB gzipped) and the player comparison picker are split into
+// their own chunks and, below, only mounted once scrolled into view — so
+// neither is fetched nor hydrated as part of this page's initial load.
 const GoalsByMatchdayChart = dynamic(
   () => import("@/components/sections/GoalsByMatchdayChart").then((m) => m.GoalsByMatchdayChart),
+);
+const PlayerComparison = dynamic(
+  () => import("@/components/sections/PlayerComparison").then((m) => m.PlayerComparison),
 );
 
 export const metadata: Metadata = {
@@ -94,7 +98,9 @@ export default async function StatsPage() {
             Goals per Matchday
           </h2>
           <div className="rounded-2xl border border-line bg-surface p-5">
-            <GoalsByMatchdayChart data={goalsByMatchday} />
+            <InView fallback={<div className="h-56 w-full animate-pulse rounded-xl bg-surface-2" />}>
+              <GoalsByMatchdayChart data={goalsByMatchday} />
+            </InView>
           </div>
         </section>
 
@@ -132,7 +138,9 @@ export default async function StatsPage() {
             Player Comparison
           </h2>
           <div className="rounded-2xl border border-line bg-surface p-5">
-            <PlayerComparison players={allScorers} />
+            <InView fallback={<div className="h-72 w-full animate-pulse rounded-xl bg-surface-2" />}>
+              <PlayerComparison players={allScorers} />
+            </InView>
           </div>
         </section>
       </div>
