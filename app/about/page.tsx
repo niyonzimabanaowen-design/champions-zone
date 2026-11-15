@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Boxes,
@@ -13,6 +14,7 @@ import {
   Wand2,
   Zap,
 } from "lucide-react";
+import { ParallaxHeader } from "@/components/motion/ParallaxHeader";
 
 export const metadata: Metadata = {
   title: "About",
@@ -65,91 +67,114 @@ const FEATURES = [
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
-      <div className="mb-16 text-center">
-        <p className="font-display text-sm uppercase tracking-[0.2em] text-accent">About</p>
-        <h1 className="mt-3 font-display text-4xl uppercase tracking-tight text-text sm:text-5xl">
-          Champions Zone
-        </h1>
-      </div>
+    <div>
+      <ParallaxHeader
+        src="/images/about/code-dark-room.jpg"
+        alt="A laptop screen glowing with code in a dark room at night"
+        eyebrow="About"
+        title="Champions Zone"
+        overlayClassName="bg-gradient-to-br from-bg/80 via-bg/30 to-accent/25"
+      />
 
-      <section className="mb-16">
-        <h2 className="mb-4 font-display text-xl uppercase tracking-tight text-text">
-          About the Project
-        </h2>
-        <div className="space-y-4 text-sm leading-relaxed text-muted sm:text-base">
-          <p>
-            I built Champions Zone because I&apos;m a fan of two things: the
-            UEFA Champions League, and building things for the web. I wanted
-            a project that let me go all-in on both — real competition data
-            treated with respect, real photography instead of stock
-            gradients, and the kind of cinematic motion and polish you don&apos;t
-            often get to justify on a typical project.
-          </p>
-          <p>
-            It&apos;s an unofficial fan site, not affiliated with or endorsed
-            by UEFA — just something built by someone who watches every
-            matchday and happens to enjoy the engineering as much as the
-            football.
-          </p>
+      <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mb-16 flex items-center gap-4">
+          <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-line">
+            <Image
+              src="/images/about/bana-owen.jpg"
+              alt="Bana Owen"
+              fill
+              sizes="64px"
+              className="object-cover"
+            />
+          </div>
+          <div>
+            <p className="font-display text-lg uppercase tracking-tight text-text">Bana Owen</p>
+            <p className="text-sm text-muted">Designer &amp; builder of Champions Zone</p>
+          </div>
         </div>
-      </section>
 
-      <section className="mb-16">
-        <h2 className="mb-6 font-display text-xl uppercase tracking-tight text-text">
-          Built With
-        </h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {STACK.map((item) => (
-            <div
-              key={item.name}
-              className="flex flex-col items-center gap-2 rounded-xl border border-line bg-surface p-4 text-center"
+        <section className="mb-16">
+          <h2 className="mb-4 font-display text-xl uppercase tracking-tight text-text">
+            About the Project
+          </h2>
+          <div className="space-y-4 text-sm leading-relaxed text-muted sm:text-base">
+            <p>
+              I built Champions Zone because I&apos;m a fan of two things: the
+              UEFA Champions League, and building things for the web. I
+              wanted a project that let me go all-in on both — real
+              competition data treated with respect, real photography
+              instead of stock gradients, and the kind of cinematic motion
+              and polish you don&apos;t often get to justify on a typical
+              project.
+            </p>
+            <p>
+              It&apos;s an unofficial fan site, not affiliated with or
+              endorsed by UEFA — just something built by someone who watches
+              every matchday and happens to enjoy the engineering as much as
+              the football.
+            </p>
+          </div>
+        </section>
+
+        <section className="mb-16">
+          <h2 className="mb-6 font-display text-xl uppercase tracking-tight text-text">
+            Built With
+          </h2>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {STACK.map((item) => (
+              <div
+                key={item.name}
+                className="flex flex-col items-center gap-2 rounded-xl border border-line bg-surface p-4 text-center"
+              >
+                <item.icon className="h-6 w-6 text-accent" aria-hidden />
+                <p className="text-sm font-medium text-text">{item.name}</p>
+                <p className="text-xs text-muted">{item.blurb}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-16">
+          <h2 className="mb-6 font-display text-xl uppercase tracking-tight text-text">
+            Features
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {FEATURES.map((feature) => (
+              <div key={feature.title} className="rounded-xl border border-line bg-surface p-5">
+                <feature.icon className="h-5 w-5 text-accent" aria-hidden />
+                <p className="mt-3 text-sm font-medium text-text">{feature.title}</p>
+                <p className="mt-1 text-sm text-muted">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 className="mb-6 font-display text-xl uppercase tracking-tight text-text">
+            Get in Touch
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="https://github.com/niyonzimabanaowen-design"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-medium text-text transition-colors hover:bg-surface-2"
             >
-              <item.icon className="h-6 w-6 text-accent" aria-hidden />
-              <p className="text-sm font-medium text-text">{item.name}</p>
-              <p className="text-xs text-muted">{item.blurb}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mb-16">
-        <h2 className="mb-6 font-display text-xl uppercase tracking-tight text-text">
-          Features
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {FEATURES.map((feature) => (
-            <div key={feature.title} className="rounded-xl border border-line bg-surface p-5">
-              <feature.icon className="h-5 w-5 text-accent" aria-hidden />
-              <p className="mt-3 text-sm font-medium text-text">{feature.title}</p>
-              <p className="mt-1 text-sm text-muted">{feature.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="mb-6 font-display text-xl uppercase tracking-tight text-text">
-          Get in Touch
-        </h2>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            href="#"
-            className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-medium text-text transition-colors hover:bg-surface-2"
-          >
-            <ExternalLink className="h-4 w-4" aria-hidden />
-            GitHub
-          </Link>
-          <Link
-            href="#"
-            className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-medium text-text transition-colors hover:bg-surface-2"
-          >
-            <ExternalLink className="h-4 w-4" aria-hidden />
-            LinkedIn
-          </Link>
-        </div>
-        <p className="mt-3 text-xs text-muted">Links coming soon.</p>
-      </section>
+              <ExternalLink className="h-4 w-4" aria-hidden />
+              GitHub
+            </Link>
+            <Link
+              href="https://www.linkedin.com/in/niyonzimabanaowen/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-medium text-text transition-colors hover:bg-surface-2"
+            >
+              <ExternalLink className="h-4 w-4" aria-hidden />
+              LinkedIn
+            </Link>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

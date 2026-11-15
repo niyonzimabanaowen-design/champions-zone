@@ -9,12 +9,16 @@ export function ParallaxHeader({
   alt,
   eyebrow,
   title,
+  overlayClassName,
   children,
 }: {
   src: string;
   alt: string;
   eyebrow: string;
   title: string;
+  /** Extra tint layer painted between the dark base overlay and the grain —
+   * e.g. a navy-to-cyan gradient for a page with its own accent mood. */
+  overlayClassName?: string;
   children?: ReactNode;
 }) {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -70,6 +74,7 @@ export function ParallaxHeader({
           className="object-cover"
         />
         <div className="absolute inset-0 bg-bg/55" />
+        {overlayClassName && <div className={`absolute inset-0 ${overlayClassName}`} />}
         <div className="grain absolute inset-0" />
       </div>
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
