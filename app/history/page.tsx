@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ParallaxHeader } from "@/components/motion/ParallaxHeader";
 import { FinalsTimeline } from "@/components/sections/FinalsTimeline";
 import { TitlesByClubChart } from "@/components/sections/TitlesByClubChart";
+import { CountUp } from "@/components/motion/CountUp";
 import historyData from "@/content/history.json";
 
 export const metadata: Metadata = {
@@ -80,9 +81,13 @@ export default function HistoryPage() {
 }
 
 function RecordTile({ label, name, value }: { label: string; name: string; value: string }) {
+  const match = value.match(/^(\d+)(.*)$/);
+
   return (
     <div className="rounded-xl border border-line bg-surface px-4 py-4 text-center">
-      <p className="font-display text-lg text-text">{value}</p>
+      <p className="font-display text-lg text-text">
+        {match ? <CountUp value={Number(match[1])} suffix={match[2]} /> : value}
+      </p>
       <p className="mt-1 truncate text-xs text-muted" title={name}>
         {name}
       </p>

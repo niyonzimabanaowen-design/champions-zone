@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { CountUp } from "@/components/motion/CountUp";
 
 export function TitlesByClubChart({ data }: { data: { club: string; titles: number }[] }) {
   const max = Math.max(...data.map((d) => d.titles), 1);
@@ -20,7 +21,7 @@ export function TitlesByClubChart({ data }: { data: { club: string; titles: numb
             />
           </div>
           <span className="w-6 shrink-0 text-right text-sm font-semibold tabular text-text">
-            {d.titles}
+            <CountUp value={d.titles} />
           </span>
         </div>
       ))}

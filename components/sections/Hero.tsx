@@ -6,6 +6,7 @@ import Link from "next/link";
 import { gsap, SplitText } from "@/lib/gsap";
 import { useMediaQuery, usePrefersReducedMotion } from "@/lib/use-media-query";
 import { HeroLightLayer } from "@/components/three/HeroLightLayer";
+import { Magnetic } from "@/components/motion/Magnetic";
 
 const INTRO_SESSION_KEY = "cz-intro-played";
 
@@ -140,18 +141,22 @@ export function Hero() {
           road to the final at the Estadio Metropolitano, Madrid.
         </p>
         <div ref={ctaRef} className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href="/standings"
-            className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-bg transition-opacity hover:opacity-90"
-          >
-            Live Table
-          </Link>
-          <Link
-            href="/fixtures"
-            className="rounded-full border border-line bg-surface-2 px-6 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-surface"
-          >
-            Fixtures
-          </Link>
+          <Magnetic>
+            <Link
+              href="/standings"
+              className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-bg transition-opacity hover:opacity-90"
+            >
+              Live Table
+            </Link>
+          </Magnetic>
+          <Magnetic>
+            <Link
+              href="/fixtures"
+              className="rounded-full border border-line bg-surface-2 px-6 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-surface"
+            >
+              Fixtures
+            </Link>
+          </Magnetic>
         </div>
       </div>
     </section>

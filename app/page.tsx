@@ -1,15 +1,28 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getCurrentMatchday, getScorers, getStandings } from "@/lib/data";
+import { getCurrentMatchday, getLatestResults, getScorers, getStandings } from "@/lib/data";
 import { StandingsTable } from "@/components/sections/StandingsTable";
 import { TopScorers } from "@/components/sections/TopScorers";
 import { UpdatedBadge } from "@/components/sections/UpdatedBadge";
 import { Hero } from "@/components/sections/Hero";
+import { ResultsTicker } from "@/components/sections/ResultsTicker";
+import { CountUp } from "@/components/motion/CountUp";
+import { Magnetic } from "@/components/motion/Magnetic";
 import scheduleSeed from "@/data/schedule.json";
 
 export default async function Home() {
-  const [{ data: standings, source, updatedAt }, { data: scorers }, currentMatchday] =
-    await Promise.all([getStandings(), getScorers(5), getCurrentMatchday()]);
+  const [
+    { data: standings, source, updatedAt },
+    { data: scorers },
+    currentMatchday,
+    { data: latestResults },
+  ] = await Promise.all([
+    getStandings(),
+    getScorers(5),
+    getCurrentMatchday(),
+    getLatestResults(),
+  ]);
 
   const topEight = standings.slice(0, 8);
 
@@ -17,10 +30,12 @@ export default async function Home() {
     <div>
       <Hero />
 
+      <ResultsTicker matches={latestResults} />
+
       <section className="border-b border-line">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-8 text-center sm:grid-cols-4 sm:px-6 lg:px-8">
-          <Fact label="Clubs" value="36" />
-          <Fact label="Matchday" value={String(currentMatchday)} />
+          <Fact label="Clubs" value={<CountUp value={36} />} />
+          <Fact label="Matchday" value={<CountUp value={currentMatchday} />} />
           <Fact label="Holders" value="PSG" />
           <Fact label="Final" value="5 Jun 2027, Madrid" />
         </div>
@@ -84,19 +99,21 @@ export default async function Home() {
             5 June 2027 · the final stop on the road to the 2027 UEFA
             Champions League title.
           </p>
-          <Link
-            href="/final"
-            className="mt-6 inline-block rounded-full border border-line bg-surface-2 px-6 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-bg"
-          >
-            Madrid 2027 →
-          </Link>
+          <Magnetic className="mt-6">
+            <Link
+              href="/final"
+              className="inline-block rounded-full border border-line bg-surface-2 px-6 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-bg"
+            >
+              Madrid 2027 →
+            </Link>
+          </Magnetic>
         </div>
       </section>
     </div>
   );
 }
 
-function Fact({ label, value }: { label: string; value: string }) {
+function Fact({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div>
       <p className="font-display tabular text-2xl text-text sm:text-3xl">{value}</p>

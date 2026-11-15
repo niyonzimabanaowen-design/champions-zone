@@ -124,6 +124,27 @@ export async function getMatches(matchday?: number): Promise<DataResult<Match[]>
   return { data: getFallbackMatches(), source: "fallback", updatedAt: fallbackCapturedAt };
 }
 
+/** The most recently finished results across all matchdays, for the Home
+ * page ticker — reuses the same /matches endpoint fetchMatches() already
+ * hits elsewhere (Next dedupes identical fetches within one request). */
+export async function getLatestResults(limit = 10): Promise<DataResult<Match[]>> {
+  if (hasApiKey()) {
+    try {
+      const all = await fetchMatches();
+      const finished = all
+        .filter((m) => m.status === "FINISHED")
+        .sort((a, b) => b.utcDate.localeCompare(a.utcDate))
+        .slice(0, limit);
+      return { data: finished, source: "live", updatedAt: new Date().toISOString() };
+    } catch (err) {
+      console.error("getLatestResults: live fetch failed, using fallback", err);
+    }
+  }
+  // No real fixture-level fallback data exists (see getMatches), so this is
+  // honestly empty rather than invented.
+  return { data: [], source: "fallback", updatedAt: fallbackCapturedAt };
+}
+
 export async function getScorers(limit = 10): Promise<DataResult<Scorer[]>> {
   if (hasApiKey()) {
     try {

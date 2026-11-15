@@ -4,6 +4,7 @@ import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { RouteTransitions } from "@/components/motion/RouteTransitions";
+import { CustomCursor } from "@/components/motion/CustomCursor";
 import "./globals.css";
 
 const barlowCondensed = Barlow_Condensed({
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-bg text-text">
         <TooltipProvider delayDuration={150}>
+          <CustomCursor />
           <Nav />
           <main className="flex-1">
             <RouteTransitions>{children}</RouteTransitions>

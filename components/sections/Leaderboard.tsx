@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CountUp } from "@/components/motion/CountUp";
 
 export interface LeaderboardRow {
   id: number;
@@ -34,7 +35,7 @@ export function Leaderboard({ rows }: { rows: LeaderboardRow[] }) {
             </div>
           </div>
           <span className="tabular w-6 shrink-0 text-right text-sm font-semibold text-text">
-            {row.value}
+            <CountUp value={row.value} />
           </span>
         </li>
       ))}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Scorer } from "@/types";
+import { CountUp } from "@/components/motion/CountUp";
 
 export function TopScorers({ scorers }: { scorers: Scorer[] }) {
   const maxGoals = Math.max(...scorers.map((s) => s.goals), 1);
@@ -26,7 +27,7 @@ export function TopScorers({ scorers }: { scorers: Scorer[] }) {
             </div>
           </div>
           <span className="tabular w-6 shrink-0 text-right text-sm font-semibold text-text">
-            {scorer.goals}
+            <CountUp value={scorer.goals} />
           </span>
         </li>
       ))}
