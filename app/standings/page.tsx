@@ -19,6 +19,7 @@ export default async function StandingsPage() {
         alt="Aerial view of a football pitch with crisp white line markings"
         eyebrow="2026/27 League Phase"
         title="Live Table"
+        sizes="(max-width: 639px) 360px, 100vw"
       />
 
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

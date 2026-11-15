@@ -10,6 +10,7 @@ export function ParallaxHeader({
   eyebrow,
   title,
   overlayClassName,
+  sizes = "100vw",
   children,
 }: {
   src: string;
@@ -19,6 +20,11 @@ export function ParallaxHeader({
   /** Extra tint layer painted between the dark base overlay and the grain —
    * e.g. a navy-to-cyan gradient for a page with its own accent mood. */
   overlayClassName?: string;
+  /** Defaults to the full viewport. Override to request a smaller source
+   * image on phones — this is a dark, tinted, grained background photo, so
+   * the extra sharpness a full-width fetch buys there isn't worth the
+   * bytes. */
+  sizes?: string;
   children?: ReactNode;
 }) {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -70,7 +76,7 @@ export function ParallaxHeader({
           fill
           priority
           fetchPriority="high"
-          sizes="100vw"
+          sizes={sizes}
           className="object-cover"
         />
         <div className="absolute inset-0 bg-bg/55" />
