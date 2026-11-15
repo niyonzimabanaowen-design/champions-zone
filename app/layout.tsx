@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <Footer />
         </TooltipProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
