@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,7 +10,30 @@ import { Hero } from "@/components/sections/Hero";
 import { ResultsTicker } from "@/components/sections/ResultsTicker";
 import { CountUp } from "@/components/motion/CountUp";
 import { Magnetic } from "@/components/motion/Magnetic";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { SITE_NAME, SITE_URL, pageOpenGraph, pageTwitter } from "@/lib/seo";
 import scheduleSeed from "@/data/schedule.json";
+
+const TITLE = "Champions League 2026/27: Live Table, Results & Stats";
+const DESCRIPTION =
+  "Follow the UEFA Champions League 2026/27 season live: the current table, fixtures and results, top scorers, and the road to the Madrid 2027 final.";
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: pageOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/" }),
+  twitter: pageTwitter({ title: TITLE, description: DESCRIPTION }),
+};
+
+const WEBSITE_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE_NAME,
+  url: SITE_URL,
+  description: DESCRIPTION,
+  author: { "@type": "Person", name: "Bana Owen" },
+};
 
 export default async function Home() {
   const [
@@ -28,6 +52,7 @@ export default async function Home() {
 
   return (
     <div>
+      <JsonLd data={WEBSITE_JSON_LD} />
       <Hero />
 
       <ResultsTicker matches={latestResults} />

@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { RouteTransitions } from "@/components/motion/RouteTransitions";
 import { CustomCursor } from "@/components/motion/CustomCursor";
 import { ConsoleSignature } from "@/components/ConsoleSignature";
+import { IS_PRODUCTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 const barlowCondensed = Barlow_Condensed({
@@ -23,13 +24,28 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Champions Zone — UEFA Champions League 2026/27",
-    template: "%s · Champions Zone",
+    default: `${SITE_NAME} — UEFA Champions League 2026/27`,
+    template: "%s | Champions Zone",
   },
   description:
     "An unofficial fan hub for the UEFA Champions League 2026/27 season: live standings, fixtures, stats, and the road to the Madrid 2027 final.",
   authors: [{ name: "Bana Owen" }],
+  robots: IS_PRODUCTION
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
+  verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION }
+    : undefined,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

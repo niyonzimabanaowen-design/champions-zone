@@ -4,11 +4,25 @@ import { getCurrentMatchday, getMatches } from "@/lib/data";
 import { MatchCard } from "@/components/sections/MatchCard";
 import { UpdatedBadge } from "@/components/sections/UpdatedBadge";
 import { ParallaxHeader } from "@/components/motion/ParallaxHeader";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, pageOpenGraph, pageTwitter } from "@/lib/seo";
+
+const TITLE = "Champions League Fixtures & Results 2026/27";
+const DESCRIPTION =
+  "Browse UEFA Champions League 2026/27 fixtures and results by matchday, with kickoff times and final scores for every club in the league phase.";
 
 export const metadata: Metadata = {
-  title: "Fixtures & Results",
-  description: "UEFA Champions League 2026/27 league-phase fixtures and results, matchday by matchday.",
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/fixtures" },
+  openGraph: pageOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/fixtures" }),
+  twitter: pageTwitter({ title: TITLE, description: DESCRIPTION }),
 };
+
+const BREADCRUMB_JSON_LD = breadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Fixtures", path: "/fixtures" },
+]);
 
 const LEAGUE_PHASE_MATCHDAYS = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -27,12 +41,19 @@ export default async function FixturesPage({
 
   return (
     <div>
+      <JsonLd data={BREADCRUMB_JSON_LD} />
       <ParallaxHeader
         src="/images/fixtures/floodlights.jpg"
         alt="Close-up of stadium floodlight towers lit up against a dark night sky"
         eyebrow="League Phase"
-        title="Fixtures & Results"
-      />
+        title="Champions League Fixtures & Results"
+      >
+        <p className="mx-auto mt-3 max-w-2xl text-sm text-muted sm:text-base">
+          Here are the Champions League fixtures and results for the 2026/27
+          league phase, matchday by matchday. Pick a matchday above to see
+          scheduled kickoff times or final scores for every club.
+        </p>
+      </ParallaxHeader>
 
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-6 flex justify-end">

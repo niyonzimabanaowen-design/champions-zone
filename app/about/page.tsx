@@ -15,11 +15,41 @@ import {
   Zap,
 } from "lucide-react";
 import { ParallaxHeader } from "@/components/motion/ParallaxHeader";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, pageOpenGraph, pageTwitter } from "@/lib/seo";
+
+const GITHUB_URL = "https://github.com/niyonzimabanaowen-design";
+const LINKEDIN_URL = "https://www.linkedin.com/in/niyonzimabanaowen/";
+
+const TITLE = "About Champions Zone: Built by Bana Owen";
+const DESCRIPTION =
+  "How and why Bana Owen built Champions Zone, the tech stack behind it, the features it includes, and how to get in touch about the project.";
+const OG_TITLE = "About Champions Zone";
 
 export const metadata: Metadata = {
-  title: "About",
-  description: "About Champions Zone and the person who built it.",
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/about" },
+  openGraph: pageOpenGraph({
+    title: TITLE,
+    description: DESCRIPTION,
+    path: "/about",
+    imageTitle: OG_TITLE,
+  }),
+  twitter: pageTwitter({ title: TITLE, description: DESCRIPTION, imageTitle: OG_TITLE }),
 };
+
+const PERSON_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Bana Owen",
+  sameAs: [GITHUB_URL, LINKEDIN_URL],
+};
+
+const BREADCRUMB_JSON_LD = breadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "About", path: "/about" },
+]);
 
 const STACK = [
   { name: "Next.js", icon: Layers, blurb: "App Router, server components, image optimization" },
@@ -68,6 +98,8 @@ const FEATURES = [
 export default function AboutPage() {
   return (
     <div>
+      <JsonLd data={PERSON_JSON_LD} />
+      <JsonLd data={BREADCRUMB_JSON_LD} />
       <ParallaxHeader
         src="/images/about/code-dark-room.jpg"
         alt="A laptop screen glowing with code in a dark room at night"
@@ -155,7 +187,7 @@ export default function AboutPage() {
           </h2>
           <div className="flex flex-wrap gap-3">
             <Link
-              href="https://github.com/niyonzimabanaowen-design"
+              href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-medium text-text transition-colors hover:bg-surface-2"
@@ -164,7 +196,7 @@ export default function AboutPage() {
               GitHub
             </Link>
             <Link
-              href="https://www.linkedin.com/in/niyonzimabanaowen/"
+              href={LINKEDIN_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-medium text-text transition-colors hover:bg-surface-2"

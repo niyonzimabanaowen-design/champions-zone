@@ -8,6 +8,8 @@ import { getClubAccentColor } from "@/lib/club-color";
 import { ClubCrest } from "@/components/sections/ClubCrest";
 import { MatchCard } from "@/components/sections/MatchCard";
 import { InView } from "@/components/motion/InView";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, pageOpenGraph, pageTwitter } from "@/lib/seo";
 
 // Recharts is a large dependency — split into its own chunk and, below, only
 // mounted once scrolled into view, rather than bundling or fetching it as
@@ -24,11 +26,27 @@ export async function generateMetadata({
   const { slug } = await params;
   const result = await getClubDetail(slug);
   if (result === "not-found" || result === "unavailable") {
-    return { title: "Club" };
+    return { title: "Club", robots: { index: false, follow: false } };
   }
+
+  const { team } = result;
+  const title = `${team.name} in the Champions League 2026/27: Results, Stats & Form`;
+  const description = `${team.name} in the UEFA Champions League 2026/27: league-phase results, current form, top scorer, and position in the table, from live match data.`;
+  const canonical = `/clubs/${team.slug}`;
+
+  const ogTitle = `${team.name} — Champions League 2026/27`;
+
   return {
-    title: result.team.name,
-    description: `${result.team.name} in the 2026/27 UEFA Champions League.`,
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: pageOpenGraph({
+      title: ogTitle,
+      description,
+      path: canonical,
+      imageTitle: team.name,
+    }),
+    twitter: pageTwitter({ title: ogTitle, description, imageTitle: team.name }),
   };
 }
 
@@ -67,6 +85,13 @@ export default async function ClubPage({
 
   return (
     <div>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Clubs", path: "/clubs" },
+          { name: team.name, path: `/clubs/${team.slug}` },
+        ])}
+      />
       <div className="relative isolate overflow-hidden border-b border-line">
         <div className="absolute inset-0 -z-10">
           {stadiumPhoto ? (

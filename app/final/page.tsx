@@ -2,18 +2,39 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Countdown } from "@/components/motion/Countdown";
 import { RoadToMadridBracket } from "@/components/sections/RoadToMadridBracket";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, pageOpenGraph, pageTwitter } from "@/lib/seo";
 import scheduleSeed from "@/data/schedule.json";
 
+const TITLE = "Champions League Final 2027 in Madrid: Countdown & Road to the Final";
+const DESCRIPTION =
+  "Everything on the 2027 UEFA Champions League final at the Estadio Metropolitano in Madrid: a live countdown and the road to the final bracket.";
+const OG_TITLE = "Champions League Final 2027";
+
 export const metadata: Metadata = {
-  title: "Madrid 2027",
-  description: "The road to the 2027 UEFA Champions League final at the Estadio Metropolitano, Madrid.",
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/final" },
+  openGraph: pageOpenGraph({
+    title: TITLE,
+    description: DESCRIPTION,
+    path: "/final",
+    imageTitle: OG_TITLE,
+  }),
+  twitter: pageTwitter({ title: TITLE, description: DESCRIPTION, imageTitle: OG_TITLE }),
 };
+
+const BREADCRUMB_JSON_LD = breadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Final", path: "/final" },
+]);
 
 export default function FinalPage() {
   const finalDateTime = `${scheduleSeed.final.date}T00:00:00Z`;
 
   return (
     <div>
+      <JsonLd data={BREADCRUMB_JSON_LD} />
       <section className="relative isolate flex min-h-[90vh] items-center justify-center overflow-hidden border-b border-line">
         <div className="absolute inset-0 -z-10">
           <Image
@@ -34,10 +55,16 @@ export default function FinalPage() {
             UEFA Champions League Final
           </p>
           <h1 className="mt-3 font-display text-5xl uppercase tracking-tight text-text sm:text-7xl">
-            Madrid 2027
+            Champions League Final: Madrid 2027
           </h1>
           <p className="mt-3 text-muted">
             {scheduleSeed.final.venue}, {scheduleSeed.final.city} · 5 June 2027
+          </p>
+          <p className="mx-auto mt-4 max-w-xl text-sm text-muted sm:text-base">
+            The 2027 Champions League final will be played at the Estadio
+            Metropolitano in Madrid on 5 June 2027. Follow the countdown and
+            the road to the final below, from the knockout rounds through to
+            the final itself.
           </p>
           <div className="mt-10">
             <Countdown target={finalDateTime} />

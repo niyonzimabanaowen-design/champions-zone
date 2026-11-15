@@ -3,24 +3,46 @@ import { ParallaxHeader } from "@/components/motion/ParallaxHeader";
 import { FinalsTimeline } from "@/components/sections/FinalsTimeline";
 import { TitlesByClubChart } from "@/components/sections/TitlesByClubChart";
 import { CountUp } from "@/components/motion/CountUp";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, pageOpenGraph, pageTwitter } from "@/lib/seo";
 import historyData from "@/content/history.json";
 
+const TITLE = "Champions League History: Winners, Finals & Records";
+const DESCRIPTION =
+  "A look back at UEFA Champions League history: every European Cup and Champions League final, the clubs with the most titles, and all-time records.";
+
 export const metadata: Metadata = {
-  title: "History",
-  description: "UEFA Champions League finals, all-time records, and how the format works.",
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/history" },
+  openGraph: pageOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/history" }),
+  twitter: pageTwitter({ title: TITLE, description: DESCRIPTION }),
 };
+
+const BREADCRUMB_JSON_LD = breadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "History", path: "/history" },
+]);
 
 export default function HistoryPage() {
   const { finals, titlesByClub, records, format } = historyData;
 
   return (
     <div>
+      <JsonLd data={BREADCRUMB_JSON_LD} />
       <ParallaxHeader
         src="/images/history/trophy.jpg"
         alt="A generic silver trophy on a blue background, not the official UEFA Champions League trophy"
         eyebrow="Road to the Final"
-        title="History"
-      />
+        title="Champions League History"
+      >
+        <p className="mx-auto mt-3 max-w-2xl text-sm text-muted sm:text-base">
+          A look back at Champions League history: every European Cup and
+          Champions League final, the clubs with the most titles, and the
+          competition&apos;s longest-standing records. Scroll through the
+          finals timeline below.
+        </p>
+      </ParallaxHeader>
 
       <FinalsTimeline finals={finals} />
 

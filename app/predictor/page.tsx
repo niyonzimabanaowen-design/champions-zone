@@ -2,11 +2,25 @@ import type { Metadata } from "next";
 import { getCurrentMatchday, getMatches } from "@/lib/data";
 import { ParallaxHeader } from "@/components/motion/ParallaxHeader";
 import { PredictorBoard } from "@/components/sections/PredictorBoard";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, pageOpenGraph, pageTwitter } from "@/lib/seo";
+
+const TITLE = "Champions League Predictor: Predict Matchday Scores";
+const DESCRIPTION =
+  "Predict every UEFA Champions League 2026/27 matchday score, saved right in your browser, and see how your picks score against the real results.";
 
 export const metadata: Metadata = {
-  title: "Predictor",
-  description: "Predict scores for the next UEFA Champions League matchday.",
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/predictor" },
+  openGraph: pageOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/predictor" }),
+  twitter: pageTwitter({ title: TITLE, description: DESCRIPTION }),
 };
+
+const BREADCRUMB_JSON_LD = breadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Predictor", path: "/predictor" },
+]);
 
 export default async function PredictorPage() {
   // Fetched in parallel rather than waiting on currentMatchday first: both
@@ -21,11 +35,12 @@ export default async function PredictorPage() {
 
   return (
     <div>
+      <JsonLd data={BREADCRUMB_JSON_LD} />
       <ParallaxHeader
         src="/images/predictor/fans-celebrating.jpg"
         alt="Football fans celebrating with a green smoke flare outside a stadium"
         eyebrow="Matchday Predictor"
-        title="Predictor"
+        title="Champions League Predictor"
       />
 
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">

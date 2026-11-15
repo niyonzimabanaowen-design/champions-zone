@@ -3,17 +3,32 @@ import Image from "next/image";
 import Link from "next/link";
 import credits from "@/content/credits.json";
 import type { PhotoCredit } from "@/types";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, pageOpenGraph, pageTwitter } from "@/lib/seo";
+
+const TITLE = "Credits";
+const DESCRIPTION =
+  "Every photo and video on Champions Zone, with photographer, source, and license.";
 
 export const metadata: Metadata = {
-  title: "Credits",
-  description: "Every photo and video on Champions Zone, with author, source, and license.",
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/credits" },
+  openGraph: pageOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/credits" }),
+  twitter: pageTwitter({ title: TITLE, description: DESCRIPTION }),
 };
+
+const BREADCRUMB_JSON_LD = breadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Credits", path: "/credits" },
+]);
 
 const data = credits as PhotoCredit[];
 
 export default function CreditsPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
+      <JsonLd data={BREADCRUMB_JSON_LD} />
       <div className="mb-10 text-center">
         <p className="font-display text-sm uppercase tracking-widest text-accent">
           Real Photography

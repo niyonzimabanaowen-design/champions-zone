@@ -6,6 +6,8 @@ import { InView } from "@/components/motion/InView";
 import { UpdatedBadge } from "@/components/sections/UpdatedBadge";
 import { Leaderboard } from "@/components/sections/Leaderboard";
 import { BiggestWins } from "@/components/sections/BiggestWins";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, pageOpenGraph, pageTwitter } from "@/lib/seo";
 
 // Recharts (~100KB gzipped) and the player comparison picker are split into
 // their own chunks and, below, only mounted once scrolled into view — so
@@ -17,11 +19,22 @@ const PlayerComparison = dynamic(
   () => import("@/components/sections/PlayerComparison").then((m) => m.PlayerComparison),
 );
 
+const TITLE = "Champions League 2026/27 Top Scorers & Stats";
+const DESCRIPTION =
+  "Champions League 2026/27 stats: top scorers and assists, goals per matchday, biggest wins, clean sheets, and a head-to-head player comparison tool.";
+
 export const metadata: Metadata = {
-  title: "Stats Center",
-  description:
-    "Top scorers, assists, goals per matchday, biggest wins, and clean sheets for the 2026/27 UEFA Champions League.",
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/stats" },
+  openGraph: pageOpenGraph({ title: TITLE, description: DESCRIPTION, path: "/stats" }),
+  twitter: pageTwitter({ title: TITLE, description: DESCRIPTION }),
 };
+
+const BREADCRUMB_JSON_LD = breadcrumbJsonLd([
+  { name: "Home", path: "/" },
+  { name: "Stats", path: "/stats" },
+]);
 
 export default async function StatsPage() {
   const { topScorers, topAssists, allScorers, goalsByMatchday, biggestWins, cleanSheets, source, updatedAt } =
@@ -29,12 +42,20 @@ export default async function StatsPage() {
 
   return (
     <div>
+      <JsonLd data={BREADCRUMB_JSON_LD} />
       <ParallaxHeader
         src="/images/stats/ball-in-net.jpg"
         alt="Close-up of a soccer ball resting in the goal net"
         eyebrow="2026/27 League Phase"
-        title="Stats Center"
-      />
+        title="Champions League Stats Center"
+      >
+        <p className="mx-auto mt-3 max-w-2xl text-sm text-muted sm:text-base">
+          This Stats Center tracks the 2026/27 Champions League&apos;s top
+          scorers, assists, and goals per matchday, all computed from real
+          match results. Compare any two players, or see which clubs have
+          posted the biggest wins and the most clean sheets.
+        </p>
+      </ParallaxHeader>
 
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex justify-end">
