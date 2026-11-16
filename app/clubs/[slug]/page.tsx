@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getClubDetail } from "@/lib/data";
 import { getClubPhotoMeta } from "@/lib/club-content";
 import { getClubAccentColor } from "@/lib/club-color";
+import { getStoredClubSlugs } from "@/lib/club-slugs";
 import { ClubCrest } from "@/components/sections/ClubCrest";
 import { MatchCard } from "@/components/sections/MatchCard";
 import { InView } from "@/components/motion/InView";
@@ -18,6 +19,17 @@ const PositionChart = dynamic(() =>
   import("@/components/sections/PositionChart").then((m) => m.PositionChart),
 );
 
+// Statically generated for all 36 clubs at build time, then revalidated in
+// the background at most once every 5 minutes — so a club page is never
+// rendered (and the shared API snapshot never re-fetched) per visitor
+// request. The slug list comes from the stored seed, not a live call, so
+// the build never depends on the API being reachable.
+export const revalidate = 300;
+
+export function generateStaticParams() {
+  return getStoredClubSlugs().map((slug) => ({ slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -25,7 +37,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const result = await getClubDetail(slug);
-  if (result === "not-found" || result === "unavailable") {
+  if (result === "not-found") {
     return { title: "Club", robots: { index: false, follow: false } };
   }
 
@@ -59,17 +71,6 @@ export default async function ClubPage({
   const result = await getClubDetail(slug);
 
   if (result === "not-found") notFound();
-
-  if (result === "unavailable") {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 lg:px-8">
-        <p className="rounded-xl border border-line bg-surface px-4 py-6 text-sm text-muted">
-          Live club data isn&apos;t available right now, so this page
-          can&apos;t be shown.
-        </p>
-      </div>
-    );
-  }
 
   const { team, standing, matches, topScorer, positionHistory } = result;
   const photoMeta = getClubPhotoMeta(team.slug);

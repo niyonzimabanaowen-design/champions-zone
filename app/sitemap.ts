@@ -1,10 +1,6 @@
 import type { MetadataRoute } from "next";
-import { getTeams } from "@/lib/data";
+import { getStoredClubSlugs } from "@/lib/club-slugs";
 import { SITE_URL } from "@/lib/seo";
-
-// Regenerated at most once an hour — the club list barely changes, and this
-// avoids hitting the football-data.org API on every crawler visit.
-export const revalidate = 3600;
 
 const STATIC_PATHS = [
   "/",
@@ -19,19 +15,20 @@ const STATIC_PATHS = [
   "/credits",
 ];
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+// Built entirely from stored data (STATIC_PATHS plus the slug list in
+// data/teams.json, via getStoredClubSlugs()) — never from a live API call —
+// so all 46 URLs are always present even if football-data.org is down or
+// rate-limited. See lib/club-slugs.ts.
+export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+
   const entries: MetadataRoute.Sitemap = STATIC_PATHS.map((path) => ({
     url: `${SITE_URL}${path}`,
     lastModified: now,
   }));
 
-  // Real team slugs only — if the live API isn't reachable, getTeams()
-  // honestly returns no teams rather than guessing at 36 slugs, so the
-  // sitemap just omits club pages rather than inventing URLs.
-  const { data: teams } = await getTeams();
-  for (const team of teams) {
-    entries.push({ url: `${SITE_URL}/clubs/${team.slug}`, lastModified: now });
+  for (const slug of getStoredClubSlugs()) {
+    entries.push({ url: `${SITE_URL}/clubs/${slug}`, lastModified: now });
   }
 
   return entries;

@@ -26,6 +26,12 @@ const BREADCRUMB_JSON_LD = breadcrumbJsonLd([
 
 const LEAGUE_PHASE_MATCHDAYS = [1, 2, 3, 4, 5, 6, 7, 8];
 
+// The `?md=` tab keeps this page dynamic (reading searchParams forces that
+// in the App Router), but the data behind it never is: getMatches() below
+// filters the one shared, 5-minute-cached /matches response in memory,
+// rather than requesting a new URL per matchday like it used to.
+export const revalidate = 300;
+
 export default async function FixturesPage({
   searchParams,
 }: {
@@ -78,9 +84,7 @@ export default async function FixturesPage({
 
         {matches.length === 0 ? (
           <p className="rounded-xl border border-line bg-surface px-4 py-6 text-center text-sm text-muted">
-            {source === "fallback"
-              ? "No fixture-level fallback data is available — reconnect the live API to see matchday fixtures."
-              : "No fixtures found for this matchday."}
+            No fixtures found for this matchday.
           </p>
         ) : (
           <div className="space-y-3">
