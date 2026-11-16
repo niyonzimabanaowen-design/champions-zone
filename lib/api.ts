@@ -2,6 +2,7 @@ import "server-only";
 
 import type { Match, MatchStatus, Scorer, Standing, Team } from "@/types";
 import { zoneForPosition } from "@/lib/zone";
+import { CLUB_SLUG_OVERRIDES } from "@/lib/club-slugs";
 import type { FinishedResult } from "@/lib/standings-splits";
 
 /**
@@ -135,7 +136,7 @@ export async function fetchTeams(): Promise<Team[]> {
     shortName: t.shortName,
     tla: t.tla,
     crest: t.crest,
-    slug: slugify(t.shortName || t.name),
+    slug: CLUB_SLUG_OVERRIDES[t.id] ?? slugify(t.shortName || t.name),
     country: t.area.name,
     founded: t.founded,
     clubColors: t.clubColors,

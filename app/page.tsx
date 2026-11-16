@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getCurrentMatchday, getLatestResults, getScorers, getStandings } from "@/lib/data";
+import { getCurrentMatchday, getLatestResults, getScorers, getStandingsSplits } from "@/lib/data";
 import { StandingsTable } from "@/components/sections/StandingsTable";
 import { TopScorers } from "@/components/sections/TopScorers";
 import { UpdatedBadge } from "@/components/sections/UpdatedBadge";
@@ -37,17 +37,19 @@ const WEBSITE_JSON_LD = {
 
 export default async function Home() {
   const [
-    { data: standings, source, updatedAt },
+    { full: standings, source, updatedAt },
     { data: scorers },
     currentMatchday,
     { data: latestResults },
   ] = await Promise.all([
-    getStandings(),
+    getStandingsSplits(),
     getScorers(5),
     getCurrentMatchday(),
     getLatestResults(),
   ]);
 
+  // Same real, finished-results-derived form guide as the Standings page
+  // (see lib/standings-splits.ts) — not the plain table, which has no form.
   const topEight = standings.slice(0, 8);
 
   return (
