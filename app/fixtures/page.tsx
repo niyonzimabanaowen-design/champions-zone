@@ -71,7 +71,7 @@ export default async function FixturesPage({
             <Link
               key={md}
               href={`/fixtures?md=${md}`}
-              className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
+              className={`inline-flex min-h-10 items-center rounded-full px-4 py-2 text-sm transition-colors ${
                 md === matchday
                   ? "bg-accent text-bg"
                   : "bg-surface text-muted hover:bg-surface-2 hover:text-text"

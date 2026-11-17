@@ -124,6 +124,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Safety net: nothing may ever make phones scroll sideways. `clip` (not
+   `hidden`) so the sticky header keeps working. */
+body {
+  overflow-x: clip;
+}
+
 .font-display {
   font-family: var(--font-display);
 }

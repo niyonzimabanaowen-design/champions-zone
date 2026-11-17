@@ -69,9 +69,9 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr]">
-          <div>
-            <div className="mb-4 flex items-center justify-between">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.6fr_1fr]">
+          <div className="min-w-0">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
               <h2 className="font-display text-2xl uppercase tracking-tight text-text">
                 Top 8
               </h2>
@@ -80,13 +80,13 @@ export default async function Home() {
             <StandingsTable standings={topEight} />
             <Link
               href="/standings"
-              className="mt-4 inline-block text-sm text-accent hover:underline"
+              className="mt-2 inline-flex min-h-11 items-center text-sm text-accent hover:underline"
             >
               Full table →
             </Link>
           </div>
 
-          <div>
+          <div className="min-w-0">
             <h2 className="mb-4 font-display text-2xl uppercase tracking-tight text-text">
               Top Scorers
             </h2>
@@ -95,7 +95,7 @@ export default async function Home() {
             </div>
             <Link
               href="/stats"
-              className="mt-4 inline-block text-sm text-accent hover:underline"
+              className="mt-2 inline-flex min-h-11 items-center text-sm text-accent hover:underline"
             >
               Full stats center →
             </Link>

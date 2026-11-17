@@ -94,7 +94,7 @@ export function StandingsExplorer({
                 disabled={disabled}
                 title={disabled ? "Needs live match results to compute" : undefined}
                 onClick={() => applyChange(opt.key, sortBy)}
-                className={`rounded-full px-3.5 py-1.5 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                className={`min-h-10 rounded-full px-4 py-2 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                   view === opt.key
                     ? "bg-accent text-bg"
                     : "bg-surface text-muted hover:bg-surface-2 hover:text-text"
@@ -113,7 +113,7 @@ export function StandingsExplorer({
               key={opt.key}
               type="button"
               onClick={() => applyChange(view, opt.key)}
-              className={`rounded-full px-3 py-1 text-xs transition-colors ${
+              className={`min-h-10 rounded-full px-3.5 py-2 text-xs transition-colors ${
                 sortBy === opt.key
                   ? "bg-accent text-bg"
                   : "bg-surface text-muted hover:bg-surface-2 hover:text-text"
