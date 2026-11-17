@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { usePrefersReducedMotion } from "@/lib/use-media-query";
 
 /**
@@ -12,10 +12,46 @@ import { usePrefersReducedMotion } from "@/lib/use-media-query";
  * cross-fade, and layers a brief floodlight-flash wipe on top of the swap —
  * the spec's signature page-transition moment. Both collapse to an instant
  * swap under prefers-reduced-motion.
+ *
+ * Next's own scroll-to-top races this cross-fade and can land a few pixels
+ * short of 0, so we redo it ourselves once the exit animation finishes —
+ * except on Back/Forward, where the browser is left to restore the previous
+ * scroll position.
  */
 export function RouteTransitions({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const reducedMotion = usePrefersReducedMotion();
+
+  const isPopState = useRef(false);
+  const skipNextScroll = useRef(false);
+  const prevPathname = useRef(pathname);
+
+  useEffect(() => {
+    function handlePopState() {
+      isPopState.current = true;
+    }
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  useEffect(() => {
+    if (pathname === prevPathname.current) return;
+    prevPathname.current = pathname;
+    skipNextScroll.current = isPopState.current;
+    isPopState.current = false;
+
+    if (reducedMotion && !skipNextScroll.current) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+  }, [pathname, reducedMotion]);
+
+  function handleExitComplete() {
+    if (skipNextScroll.current) {
+      skipNextScroll.current = false;
+      return;
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }
 
   if (reducedMotion) {
     return <div key={pathname}>{children}</div>;
@@ -23,7 +59,7 @@ export function RouteTransitions({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="wait" initial={false} onExitComplete={handleExitComplete}>
         <motion.div
           key={pathname}
           initial={{ opacity: 0 }}

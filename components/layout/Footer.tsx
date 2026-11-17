@@ -21,7 +21,7 @@ export function Footer() {
           </div>
           <div className="space-y-2 sm:text-right">
             <p>Football data provided by the Football-Data.org API.</p>
-            <nav className="flex flex-wrap gap-4 sm:justify-end">
+            <nav aria-label="Footer" className="flex flex-wrap gap-4 sm:justify-end">
               <Link href="/credits" className="hover:text-text">
                 Credits
               </Link>

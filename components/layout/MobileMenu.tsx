@@ -6,14 +6,11 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { usePrefersReducedMotion } from "@/lib/use-media-query";
+import { isNavLinkActive } from "@/lib/nav-active";
 
 interface NavLink {
   href: string;
   label: string;
-}
-
-function isActive(pathname: string, href: string): boolean {
-  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 export function MobileMenu({ links }: { links: NavLink[] }) {
@@ -137,7 +134,7 @@ export function MobileMenu({ links }: { links: NavLink[] }) {
               className="flex flex-1 flex-col items-center justify-center gap-6 px-6"
             >
               {links.map((link) => {
-                const active = isActive(pathname, link.href);
+                const active = isNavLinkActive(pathname, link.href);
                 return (
                   <motion.li key={link.href} variants={itemVariants}>
                     <Link
